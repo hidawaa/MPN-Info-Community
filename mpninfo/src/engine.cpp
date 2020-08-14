@@ -68,32 +68,55 @@ bool Engine::connectDatabase()
             mDatabaseConnection = generateRandomId(16);
 
             QSqlDatabase db;
-            QString driverName;
             if (driver == DatabaseMysql) {
-                driverName = "QMYSQL";
+                QString driverName = "QMYSQL";
                 QString hostName =  mSettings.value("Database/host").toString();
                 QStringList authList = decrypt(mSettings.value("Database/auth").toString()).split(";");
                 QString databaseName = authList[0];
                 QString username = authList.size() > 1? authList[1] : QString();
                 QString password = authList.size() > 2? authList[2] : QString();
+                QString options =  mSettings.value("Database/options").toString();
+
+                if (options.isEmpty())
+                    options = "MYSQL_OPT_RECONNECT=1";
 
                 db = QSqlDatabase::addDatabase(driverName, mDatabaseConnection);
                 db.setHostName(hostName);
                 db.setDatabaseName(databaseName);
                 db.setUserName(username);
                 db.setPassword(password);
+                db.setConnectOptions(options);
                 db.open();
             }
-            else {
-                QString databaseName = mSettings.value("Database/data").toString();
+            else if (driver == DatabaseSqlite) {
+                QString databaseName = mSettings.value("Database/name").toString();
                 if (databaseName.isEmpty())
                     databaseName = "data.db";
 
                 bool encrypt = mSettings.value("Database/encrypt").toBool();
-                driverName = encrypt? "QSQLCIPHER" : "QSQLITE";
+                QString driverName = encrypt? "QSQLCIPHER" : "QSQLITE";
+                QString options =  mSettings.value("Database/options").toString();
 
                 db = QSqlDatabase::addDatabase(driverName, mDatabaseConnection);
                 db.setDatabaseName(databaseName);
+                db.setConnectOptions(options);
+                db.open();
+            }
+            else if (driver == DatabaseOther) {
+                QString driverName =  mSettings.value("Database/driver").toString();
+                QString hostName =  mSettings.value("Database/host").toString();
+                QStringList authList = decrypt(mSettings.value("Database/auth").toString()).split(";");
+                QString databaseName = authList[0];
+                QString username = authList.size() > 1? authList[1] : QString();
+                QString password = authList.size() > 2? authList[2] : QString();
+                QString options =  mSettings.value("Database/options").toString();
+
+                db = QSqlDatabase::addDatabase(driverName, mDatabaseConnection);
+                db.setHostName(hostName);
+                db.setDatabaseName(databaseName);
+                db.setUserName(username);
+                db.setPassword(password);
+                db.setConnectOptions(options);
                 db.open();
             }
 
@@ -101,6 +124,12 @@ bool Engine::connectDatabase()
                 mDatabase = db;
                 break;
             }
+
+            int result = QMessageBox::warning(0, "Database Connection Error", "Gagal melakukan koneksi dengan database. Coba lagi?", QMessageBox::Reset | QMessageBox::Yes | QMessageBox::No);
+            if (result == QMessageBox::Yes)
+                continue;
+            else if (result == QMessageBox::No)
+                return false;
 
             if (dialog.exec() == QDialog::Rejected)
                 break;
@@ -111,31 +140,34 @@ bool Engine::connectDatabase()
 
                 mSettings.setValue("Database/host", dialog.hostname());
                 mSettings.setValue("Database/auth", encrypt(auth));
+                mSettings.setValue("Database/options", dialog.options());
+
+                mSettings.remove("Database/driver");
             }
-            else {
+            else if (dialog.driver() == DatabaseSqlite) {
                 bool encrypt = false;
-                QFile dbFile("data.db");
-                if (dbFile.exists())
-                {
-                    int result = QMessageBox::question(nullptr, "Encrypt Database", "Database sudah tersedia. Apakah database tersebut terencrypt?", QMessageBox::Yes | QMessageBox::No);
-                    if (result == QMessageBox::Yes)
-                        encrypt = true;
-                }
-                else
-                {
-                    int result = QMessageBox::question(nullptr, "Encrypt Database", "Apakah Anda ingin mengencrypt database?", QMessageBox::Yes | QMessageBox::No);
-                    if (result == QMessageBox::Yes)
-                        encrypt = true;
-                }
+                if (dialog.driverName() == "QSQLCIPHER")
+                    encrypt = true;
 
                 if (encrypt)
                     mSettings.setValue("Database/encrypt", true);
                 else
                     mSettings.remove("Database/encrypt");
 
-                mSettings.setValue("Database/data", "data.db");
+                mSettings.setValue("Database/name", dialog.database());
+                mSettings.setValue("Database/options", dialog.options());
+
+                mSettings.remove("Database/driver");
                 mSettings.remove("Database/host");
                 mSettings.remove("Database/auth");
+            }
+            else {
+                QString auth = QString("%1;%2;%3").arg(dialog.database(), dialog.username(), dialog.password());
+
+                mSettings.setValue("Database/driver", dialog.driverName());
+                mSettings.setValue("Database/host", dialog.hostname());
+                mSettings.setValue("Database/auth", encrypt(auth));
+                mSettings.setValue("Database/options", dialog.options());
             }
         } while (true);
     }

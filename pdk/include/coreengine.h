@@ -11,7 +11,8 @@
 enum DatabaseTypes {
     DatabaseUnknown = 0,
     DatabaseMysql,
-    DatabaseSqlite
+    DatabaseSqlite,
+    DatabaseOther
 };
 
 enum GroupTypes {

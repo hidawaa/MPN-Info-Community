@@ -15,10 +15,12 @@ public:
     explicit DatabaseSettingDialog(QWidget *parent = nullptr);
 
     int driver();
+    QString driverName();
     QString hostname();
     QString username();
     QString password();
     QString database();
+    QString options();
 
     void setDriver(int driver);
 
@@ -26,16 +28,13 @@ private slots:
     void updateWidget(int index);
 
 private:
-    QLabel *mServerLabel;
-    QLabel *mUsernameLabel;
-    QLabel *mPasswordLabel;
-    QLabel *mDatabaseLabel;
-
     QComboBox *mDriverCombo;
+    QLineEdit *mDriverEdit;
     QLineEdit *mServerEdit;
     QLineEdit *mUsernameEdit;
     QLineEdit *mPasswordEdit;
     QLineEdit *mDatabaseEdit;
+    QLineEdit *mOptionsEdit;
 };
 
 
