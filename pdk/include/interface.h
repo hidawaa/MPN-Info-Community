@@ -31,7 +31,7 @@ public:
     Page(QWidget *parent = nullptr) : QWidget(parent) {}
     virtual ~Page() {}
 
-    virtual void setArgs(const QVariantMap &args) = 0;
+    virtual void setArgs(const QVariant &args) {}
 };
 
 class Object

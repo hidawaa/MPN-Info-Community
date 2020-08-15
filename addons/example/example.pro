@@ -1,7 +1,7 @@
 #! [0]
 TEMPLATE        = lib
 CONFIG         += plugin
-QT             += widgets
+QT             += widgets sql
 INCLUDEPATH    += $$PWD/../../pdk/include
 HEADERS         = plugin.h \
     exampleaddon.h

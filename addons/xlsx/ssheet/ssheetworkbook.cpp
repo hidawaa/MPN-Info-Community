@@ -1156,7 +1156,7 @@ SSheetWorksheet *SSheetWorkbook::createWorksheet(const QString &name)
 
 SSheetWorksheet *SSheetWorkbook::worksheet(int index)
 {
-    if (index < 0 || mWorksheetList.size() >= index)
+    if (index < 0 || index >= mWorksheetList.size())
         return nullptr;
 
     return mWorksheetList[index];

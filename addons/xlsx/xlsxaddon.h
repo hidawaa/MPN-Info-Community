@@ -68,7 +68,7 @@ public:
             return true;
         }
         else if (key == "value") {
-            if (mActiveWorksheet)
+            if (!mActiveWorksheet)
                 return QString();
 
             QVariantMap argsMap = args.toMap();

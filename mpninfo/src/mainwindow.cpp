@@ -31,6 +31,7 @@ MainWindow::~MainWindow()
 void MainWindow::addPage(Page *page, const QString &title)
 {
     mTabWidget->addTab(page, title);
+    mTabWidget->setCurrentWidget(page);
 }
 
 void MainWindow::start()

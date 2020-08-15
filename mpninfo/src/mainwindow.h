@@ -7,7 +7,7 @@
 #include <window.h>
 #include <interface.h>
 
-class MainWindow : public QMainWindow, Window
+class MainWindow : public QMainWindow, public Window
 {
     Q_OBJECT
 

@@ -19,7 +19,7 @@ public:
     QString group() { return "Example"; }
     QString version() { return "0.0.1"; }
     QString description() { return "Contoh AddOns"; }
-    QList<AddOnPtr> addOns() { return QList<AddOnPtr>() << AddOnPtr(new ExamplePageAddOn) << AddOnPtr(new ExampleProcessAddOn); }
+    QList<AddOnPtr> addOns() { return QList<AddOnPtr>() << AddOnPtr(new ExamplePageAddOn) << AddOnPtr(new ExampleProcessAddOn) << AddOnPtr(new ExampleLoadPageAddOn); }
 };
 
 

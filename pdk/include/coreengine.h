@@ -7,6 +7,7 @@
 #include <QVariantMap>
 
 #include "interface.h"
+#include "window.h"
 
 enum DatabaseTypes {
     DatabaseUnknown = 0,
