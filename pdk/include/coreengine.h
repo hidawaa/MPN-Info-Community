@@ -140,7 +140,7 @@ public:
     virtual Common *common() = 0;
     virtual Window *window() = 0;
 
-    virtual void run(void (* foo)(void *), void *data = nullptr) = 0;
+    virtual void run(void (*foo)(void *, void *), void *data = nullptr, void *result = nullptr) = 0;
 
     virtual Kantor kantor(const QString &kode) const = 0;
     virtual const KantorMap &kantorMap() = 0;

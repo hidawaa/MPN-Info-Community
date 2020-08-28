@@ -34,6 +34,7 @@ HEADERS += \
     ../pdk/include/common.h \
     src/ccommon.h \
     src/cdatabase.h \
+    src/crunnable.h \
     src/databaseconnectiondialog.h \
     src/databasesettings.h \
     src/engine.h \

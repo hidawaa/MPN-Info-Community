@@ -42,7 +42,7 @@ public:
     void setWindow(Window *window) { mWindow = window; }
     Window *window() { return mWindow; }
 
-    void run(void (* foo)(void *), void *data = nullptr);
+    void run(void (*foo)(void *, void *), void *data = nullptr, void *result = nullptr);
 
     User user() { return mUser; }
 

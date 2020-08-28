@@ -1,10 +1,13 @@
 #include "engine.h"
 
+#include <QCoreApplication>
 #include <QFile>
 #include <QMessageBox>
 #include <QDir>
 #include <QPluginLoader>
 #include <QSqlQuery>
+#include <QThreadPool>
+#include <QCryptographicHash>
 #include <QDebug>
 
 #include <interface.h>
@@ -13,6 +16,7 @@
 #include "databaseconnectiondialog.h"
 #include "ccommon.h"
 #include "cdatabase.h"
+#include "crunnable.h"
 
 const char *chiperPassword = "MpnInfoDatabase";
 
@@ -233,15 +237,42 @@ void Engine::processAddOnsAfterLogin()
     }
 }
 
-bool Engine::login(const QString &username, const QString &password)
+bool Engine::login(const QString &uname, const QString &pwd)
 {
-    if (username.isEmpty())
+    if (uname.isEmpty())
         return false;
 
-    bool success = true;
+    QSqlQuery query(mDatabase);
+    query.exec("SELECT `value` FROM `info` WHERE `key`='db.version'");
+
+    QString version;
+    if (query.next())
+        version = query.value(0).toString();
+
+    query.prepare("SELECT `password`, `group` FROM `users` WHERE `username`=?");
+    query.addBindValue(uname);
+    query.exec();
+
+    if (!query.next())
+        return false;
+
+    QString password = query.value(0).toString();
+    int group = query.value(1).toInt();
+
+    bool success = false;
+    if (version == "4.4") {
+        if (password == pwd)
+            success = true;
+    }
+    else if (version == "5.0") {
+        QString passHash = QCryptographicHash::hash(QString(uname + ":" + pwd).toUtf8(), QCryptographicHash::Sha1).toHex();
+        if (password == passHash)
+            success = true;
+    }
+
     if (success) {
-        mUser.username = username;
-        mUser.group = GroupAdministrator;
+        mUser.username = uname;
+        mUser.group = GroupTypes(group);
 
         if (mUser.group == GroupAdministrator)
             mUser.permission = AddOnAdministrators;
@@ -250,6 +281,7 @@ bool Engine::login(const QString &username, const QString &password)
         else if (mUser.group == GroupGuest)
             mUser.permission = AddOnGuest;
     }
+
     return success;
 }
 
@@ -301,9 +333,17 @@ QStringList Engine::availableAddOns()
     return mAddOnMap.keys();
 }
 
-void Engine::run(void (*cb)(void *), void *data)
+void Engine::run(void (*cb)(void *, void *), void *data, void *result)
 {
-    cb(data);
+    CRunnable *runnable = new CRunnable(cb, data, result);
+    runnable->setAutoDelete(true);
+
+    QThreadPool::globalInstance()->start(runnable);
+
+    while (runnable->isRunning()) {
+        qApp->processEvents();
+        QThread::msleep(10);
+    }
 }
 
 Kantor Engine::kantor(const QString &kode) const
