@@ -3,68 +3,74 @@
 #include <QSqlQuery>
 #include <QDebug>
 
-CDatabase::CDatabase(const QSqlDatabase &db) :
-    mDriverName(db.driverName()),
-    mConnectionName(db.connectionName()),
-    mQuery(db) {}
+CDatabase::CDatabase(const QSqlDatabase &db)
+{
+    mData.reset(new CDatabaseData);
+    mData->database = db;
+    mData->query = QSqlQuery(db);
+}
 
 CDatabase::~CDatabase()
 {
-    {
-        QSqlDatabase db = QSqlDatabase::database(mConnectionName, false);
-        db.close();
-    }
+    QString connectionName = mData->database.connectionName();
+    mData->database.close();
+    mData.reset();
 
-    QSqlDatabase::removeDatabase(mConnectionName);
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 QString CDatabase::driverName()
 {
-    return mDriverName;
+    return mData->database.driverName();
 }
 
 void CDatabase::prepare(const QString &query)
 {
-    mQuery.prepare(query);
+    mData->query.prepare(query);
+}
+
+void CDatabase::addBindValue(const QVariant &value)
+{
+    mData->query.addBindValue(value);
 }
 
 void CDatabase::bindValue(const QString &placeHolder, const QVariant &value)
 {
-    mQuery.bindValue(placeHolder, value);
+    mData->query.bindValue(placeHolder, value);
 }
 
 void CDatabase::exec(const QString &query)
 {
-    mQuery.exec(query);
+    mData->query.exec(query);
 }
 
 void CDatabase::exec()
 {
-    mQuery.exec();
+    mData->query.exec();
 }
 
-int CDatabase::numARowsffected()
+int CDatabase::numRowsffected()
 {
-    return mQuery.numRowsAffected();
+    return mData->query.numRowsAffected();
 }
 
 bool CDatabase::next()
 {
-    return mQuery.next();
+    return mData->query.next();
 }
 
 QVariant CDatabase::value(int i)
 {
-    return mQuery.value(i);
+    return mData->query.value(i);
 }
 
 
 QVariant CDatabase::value(const QString &name)
 {
-    return mQuery.value(name);
+    return mData->query.value(name);
 }
 
 int CDatabase::size()
 {
-    return mQuery.size();
+    return mData->query.size();
 }

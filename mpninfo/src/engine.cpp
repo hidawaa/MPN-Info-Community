@@ -257,12 +257,12 @@ DatabasePtr Engine::database()
 {
     QString connectionName = common()->generateRandomId(16);
 
-    QSqlDatabase db = QSqlDatabase::addDatabase(mDatabase.driver(), connectionName);
+    QSqlDatabase db = QSqlDatabase::addDatabase(mDatabase.driverName(), connectionName);
     db.setHostName(mDatabase.hostName());
-    db.setDatabaseName(mDatabase.userName());
-    db.setUserName(mDatabase.password());
-    db.setPassword(mDatabase.databaseName());
-    db.setConnectOptions(db.connectOptions());
+    db.setDatabaseName(mDatabase.databaseName());
+    db.setUserName(mDatabase.userName());
+    db.setPassword(mDatabase.password());
+    db.setConnectOptions(mDatabase.connectOptions());
     db.open();
 
     return DatabasePtr(new CDatabase(db));

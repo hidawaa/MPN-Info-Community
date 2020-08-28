@@ -30,8 +30,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::addPage(PagePtr page, const QString &title)
 {
-    mTabWidget->addTab(page, title);
-    mTabWidget->setCurrentWidget(page);
+    QWidget *widget = page.data();
+    mTabWidget->addTab(widget, title);
+    mTabWidget->setCurrentWidget(widget);
+
+    mPageHash[widget] = page;
 }
 
 void MainWindow::start()
@@ -99,16 +102,16 @@ void MainWindow::load()
 
 void MainWindow::removePage(int index)
 {
-    QWidget *page = mTabWidget->widget(index);
+    QWidget *widget = mTabWidget->widget(index);
 
     mTabWidget->removeTab(index);
-    delete page;
+    mPageHash.remove(widget);
 }
 
 void MainWindow::processAddOn(AddOnPtr addOn)
 {
     if (addOn->type() == AddOnPage)
-        mTabWidget->addTab(addOn->newPage(), addOn->title());
+        addPage(addOn->newPage(), addOn->title());
     else if (addOn->type() == AddOnProcess)
         addOn->newProcess()->run();
 }

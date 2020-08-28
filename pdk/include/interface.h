@@ -4,6 +4,7 @@
 #include <QString>
 #include <QVariant>
 #include <QWidget>
+#include <QDebug>
 
 enum AddOnTypes {
     AddOnObject = 0,
@@ -31,12 +32,12 @@ class Page : public QWidget
 {
 public:
     Page(QWidget *parent = nullptr) : QWidget(parent) {}
-    virtual ~Page() {}
+    virtual ~Page() { qDebug() << "DELETED"; }
 
     virtual void setArgs(const QVariant &) {}
 };
 
-typedef  Page* PagePtr;
+typedef  QSharedPointer<Page> PagePtr;
 
 class Object
 {
@@ -71,7 +72,7 @@ public:
     virtual int loadFlags() = 0;
     virtual int permission() = 0;
     virtual ObjectPtr newObject() = 0;
-    virtual Page *newPage() = 0;
+    virtual PagePtr newPage() = 0;
     virtual ProcessPtr newProcess() = 0;
 
     CoreEngine *engine;

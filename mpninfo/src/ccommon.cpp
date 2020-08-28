@@ -1,6 +1,5 @@
 #include "ccommon.h"
 
-#include <QRandomGenerator>
 #include "simplecrypt.h"
 
 const quint64 cryptoNumber(0x032ab4a5acb3a033);
@@ -12,7 +11,7 @@ QString CCommon::generateRandomId(int length)
     QString randomString;
     for(int i=0; i<length; ++i)
     {
-        int index = int(QRandomGenerator::global()->generate() % possibleCharacters.length());
+        int index = int(rand() % possibleCharacters.length());
         QChar nextChar = possibleCharacters.at(index);
         randomString.append(nextChar);
     }

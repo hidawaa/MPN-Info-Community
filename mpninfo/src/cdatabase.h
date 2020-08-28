@@ -5,6 +5,11 @@
 #include <QSqlQuery>
 #include <database.h>
 
+struct CDatabaseData {
+    QSqlDatabase database;
+    QSqlQuery query;
+};
+
 class CDatabase : public Database
 {
 public:
@@ -14,20 +19,19 @@ public:
     QString driverName();
 
     void prepare(const QString &query);
+    void addBindValue(const QVariant &value);
     void bindValue(const QString &placeHolder, const QVariant &value);
     void exec();
     void exec(const QString &query);
 
-    int numARowsffected();
+    int numRowsffected();
     bool next();
     QVariant value(int i);
     QVariant value(const QString &name);
     int size();
 
 private:
-    QString mDriverName;
-    QString mConnectionName;
-    QSqlQuery mQuery;
+    QScopedPointer<CDatabaseData> mData;
 };
 
 #endif // CDATABASE_H

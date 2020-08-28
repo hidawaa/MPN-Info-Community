@@ -31,5 +31,6 @@ private:
     QTabWidget *mTabWidget;
     QMap<QString, QMenu *> mGroupMenuMap;
     QMap<QAction *, QString> mActionMap;
+    QHash<QWidget *, PagePtr> mPageHash;
 };
 #endif // MAINWINDOW_H
