@@ -20,7 +20,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 INCLUDEPATH +=../pdk/include
 
 SOURCES += \
-    src/databasesettingdialog.cpp \
+    src/ccommon.cpp \
+    src/cdatabase.cpp \
+    src/databaseconnectiondialog.cpp \
+    src/databasesettings.cpp \
     src/engine.cpp \
     src/logindialog.cpp \
     src/main.cpp \
@@ -28,7 +31,11 @@ SOURCES += \
     src/simplecrypt.cpp
 
 HEADERS += \
-    src/databasesettingdialog.h \
+    ../pdk/include/common.h \
+    src/ccommon.h \
+    src/cdatabase.h \
+    src/databaseconnectiondialog.h \
+    src/databasesettings.h \
     src/engine.h \
     src/logindialog.h \
     src/mainwindow.h \

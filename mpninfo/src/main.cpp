@@ -13,8 +13,13 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     Engine *engine = Engine::instance();
+    engine->loadAddons();
+    engine->processAddOnsAtStart();
+
     if (!engine->connectDatabase())
         return 1;
+
+    engine->processAddOnsBeforeLogin();
 
     LoginDialog dialog;
     do {

@@ -17,7 +17,7 @@ public:
 
     void start();
 
-    void addPage(Page *page, const QString &title);
+    void addPage(PagePtr page, const QString &title);
 
 private slots:
     void load();

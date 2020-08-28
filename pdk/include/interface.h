@@ -11,9 +11,11 @@ enum AddOnTypes {
     AddOnProcess
 };
 
-enum AddOnLoadFlags {
-    AddOnLoadCreateMenu      = 1,
-    AddOnLoadExecAfterLogin  = 2
+enum AddOnFlags {
+    AddOnCreateMenu          = 1,
+    AddOnExecAtStart         = 2,
+    AddOnExecBeforeLogin = 4,
+    AddOnExecAfterLogin  = 16
 };
 
 enum AddOnPermission {
@@ -31,8 +33,10 @@ public:
     Page(QWidget *parent = nullptr) : QWidget(parent) {}
     virtual ~Page() {}
 
-    virtual void setArgs(const QVariant &args) {}
+    virtual void setArgs(const QVariant &) {}
 };
+
+typedef  Page* PagePtr;
 
 class Object
 {
@@ -43,6 +47,8 @@ public:
     virtual QVariant exec(const QString &key, const QVariant &arg = QVariant()) = 0;
 };
 
+typedef  QSharedPointer<Object> ObjectPtr;
+
 class Process
 {
 public:
@@ -50,6 +56,8 @@ public:
 
     virtual void run() = 0;
 };
+
+typedef  QSharedPointer<Process> ProcessPtr;
 
 class AddOn
 {
@@ -62,9 +70,9 @@ public:
     virtual AddOnTypes type() = 0;
     virtual int loadFlags() = 0;
     virtual int permission() = 0;
-    virtual Object *newObject() = 0;
+    virtual ObjectPtr newObject() = 0;
     virtual Page *newPage() = 0;
-    virtual Process *newProcess() = 0;
+    virtual ProcessPtr newProcess() = 0;
 
     CoreEngine *engine;
 };

@@ -1,5 +1,5 @@
-#ifndef DATABASESETTINGDIALOG_H
-#define DATABASESETTINGDIALOG_H
+#ifndef DATABASECONNECTIONDIALOG_H
+#define DATABASECONNECTIONDIALOG_H
 
 #include <QDialog>
 
@@ -8,11 +8,11 @@ class QLabel;
 class QComboBox;
 class QLineEdit;
 class Engine;
-class DatabaseSettingDialog : public QDialog
+class DatabaseConnectionDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit DatabaseSettingDialog(QWidget *parent = nullptr);
+    explicit DatabaseConnectionDialog(QWidget *parent = nullptr);
 
     int driver();
     QString driverName();
@@ -38,4 +38,4 @@ private:
 };
 
 
-#endif // DATABASESETTINGDIALOG_H
+#endif // DATABASECONNECTIONDIALOG_H

@@ -28,7 +28,7 @@ MainWindow::~MainWindow()
         removePage(mTabWidget->currentIndex());
 }
 
-void MainWindow::addPage(Page *page, const QString &title)
+void MainWindow::addPage(PagePtr page, const QString &title)
 {
     mTabWidget->addTab(page, title);
     mTabWidget->setCurrentWidget(page);
@@ -44,7 +44,6 @@ void MainWindow::load()
 {
     Engine *engine = Engine::instance();
     engine->loadData();
-    engine->loadPlugins();
 
     QMap<QString, QAction *> sortMap;
     QList<AddOnPtr> addOnExecList;
@@ -54,7 +53,7 @@ void MainWindow::load()
         if (addOnPtr->permission() != 0 && !(addOnPtr->permission() & engine->user().permission))
             continue;
 
-        if (addOnPtr->loadFlags() & AddOnLoadCreateMenu) {
+        if (addOnPtr->loadFlags() & AddOnCreateMenu) {
             QString group = addOnPtr->group();
             QString title = addOnPtr->title();
 
@@ -71,7 +70,7 @@ void MainWindow::load()
             sortMap[title] = action;
         }
 
-        if (addOnPtr->loadFlags() & AddOnLoadExecAfterLogin)
+        if (addOnPtr->loadFlags() & AddOnExecAfterLogin)
             addOnExecList << addOnPtr;
     }
 
@@ -93,9 +92,8 @@ void MainWindow::load()
         connect(action, &QAction::triggered, this, &MainWindow::onAddOnActionTriggered);
     }
 
-    QTimer::singleShot(0, [this, addOnExecList]() {
-        foreach (AddOnPtr addOn, addOnExecList)
-            processAddOn(addOn);
+    QTimer::singleShot(0, [engine]() {
+        engine->processAddOnsAfterLogin();
     });
 }
 
@@ -112,7 +110,7 @@ void MainWindow::processAddOn(AddOnPtr addOn)
     if (addOn->type() == AddOnPage)
         mTabWidget->addTab(addOn->newPage(), addOn->title());
     else if (addOn->type() == AddOnProcess)
-        QScopedPointer<Process>(addOn->newProcess())->run();
+        addOn->newProcess()->run();
 }
 
 void MainWindow::onAddOnActionTriggered()

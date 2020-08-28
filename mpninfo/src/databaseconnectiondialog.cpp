@@ -1,4 +1,4 @@
-#include "databasesettingdialog.h"
+#include "databaseconnectiondialog.h"
 
 #include <QLabel>
 #include <QLineEdit>
@@ -11,7 +11,7 @@
 
 #include "engine.h"
 
-DatabaseSettingDialog::DatabaseSettingDialog(QWidget *parent) :
+DatabaseConnectionDialog::DatabaseConnectionDialog(QWidget *parent) :
     QDialog(parent, Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::MSWindowsFixedSizeDialogHint)
 {
     QLabel *iconLabel = new QLabel;
@@ -74,47 +74,47 @@ DatabaseSettingDialog::DatabaseSettingDialog(QWidget *parent) :
     connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
 }
 
-void DatabaseSettingDialog::setDriver(int driver)
+void DatabaseConnectionDialog::setDriver(int driver)
 {
     mDriverCombo->setCurrentIndex(mDriverCombo->findData(driver));
 }
 
-int DatabaseSettingDialog::driver()
+int DatabaseConnectionDialog::driver()
 {
     return mDriverCombo->itemData(mDriverCombo->currentIndex()).toInt();
 }
 
-QString DatabaseSettingDialog::driverName()
+QString DatabaseConnectionDialog::driverName()
 {
     return mDriverEdit->text();
 }
 
-QString DatabaseSettingDialog::hostname()
+QString DatabaseConnectionDialog::hostname()
 {
     return mServerEdit->text();
 }
 
-QString DatabaseSettingDialog::username()
+QString DatabaseConnectionDialog::username()
 {
     return mUsernameEdit->text();
 }
 
-QString DatabaseSettingDialog::password()
+QString DatabaseConnectionDialog::password()
 {
     return mPasswordEdit->text();
 }
 
-QString DatabaseSettingDialog::database()
+QString DatabaseConnectionDialog::database()
 {
     return mDatabaseEdit->text();
 }
 
-QString DatabaseSettingDialog::options()
+QString DatabaseConnectionDialog::options()
 {
     return mOptionsEdit->text();
 }
 
-void DatabaseSettingDialog::updateWidget(int index)
+void DatabaseConnectionDialog::updateWidget(int index)
 {
     int type = mDriverCombo->itemData(index).toInt();
 
