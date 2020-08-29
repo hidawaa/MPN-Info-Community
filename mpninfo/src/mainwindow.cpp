@@ -4,9 +4,11 @@
 #include <QTabWidget>
 #include <QMenuBar>
 #include <QTimer>
+#include <QMessageBox>
 #include <QDebug>
 
 #include <interface.h>
+
 #include "engine.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -39,14 +41,12 @@ void MainWindow::addPage(PagePtr page, const QString &title)
 
 void MainWindow::start()
 {
-    showMaximized();
-    QTimer::singleShot(0, this, &MainWindow::load);
+    load();
 }
 
 void MainWindow::load()
 {
     Engine *engine = Engine::instance();
-    engine->loadData();
 
     QMap<QString, QAction *> sortMap;
     QList<AddOnPtr> addOnExecList;
@@ -94,6 +94,8 @@ void MainWindow::load()
 
         connect(action, &QAction::triggered, this, &MainWindow::onAddOnActionTriggered);
     }
+
+    showMaximized();
 
     QTimer::singleShot(0, [engine]() {
         engine->processAddOnsAfterLogin();

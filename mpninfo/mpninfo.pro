@@ -21,6 +21,7 @@ INCLUDEPATH +=../pdk/include
 
 SOURCES += \
     src/ccommon.cpp \
+    src/cdata.cpp \
     src/cdatabase.cpp \
     src/databaseconnectiondialog.cpp \
     src/databasesettings.cpp \
@@ -28,10 +29,12 @@ SOURCES += \
     src/logindialog.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
+    src/settingsdialog.cpp \
     src/simplecrypt.cpp
 
 HEADERS += \
     src/ccommon.h \
+    src/cdata.h \
     src/cdatabase.h \
     src/crunnable.h \
     src/databaseconnectiondialog.h \
@@ -39,6 +42,7 @@ HEADERS += \
     src/engine.h \
     src/logindialog.h \
     src/mainwindow.h \
+    src/settingsdialog.h \
     src/simplecrypt.h
 
 # Default rules for deployment.

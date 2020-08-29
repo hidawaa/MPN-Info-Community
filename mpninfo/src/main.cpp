@@ -35,6 +35,9 @@ int main(int argc, char *argv[])
             return 1;
     } while (true);
 
+    if(!engine->load())
+        return -1;
+
     MainWindow w;
     engine->setWindow(&w);
     w.start();

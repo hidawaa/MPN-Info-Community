@@ -42,3 +42,18 @@ QVariant DatabaseSettings::value(const QString &key)
     else
         return db->value(0);
 }
+
+
+QVariant DatabaseSettings::remove(const QString &key)
+{
+    DatabasePtr db = mEngine->database();
+    db->exec(QString("DELETE FROM `settings` WHERE `key`='%1'").arg(key));
+    if (!db->next())
+        return QVariant();
+
+    QString s = db->value(0).toString();
+    if (s.startsWith(QLatin1String("@ByteArray(")))
+        return QByteArray(s.toLatin1().mid(11, s.size() - 12));
+    else
+        return db->value(0);
+}

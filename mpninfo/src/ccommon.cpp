@@ -1,6 +1,7 @@
 #include "ccommon.h"
 
 #include <QRandomGenerator>
+#include <QDebug>
 
 #include "simplecrypt.h"
 
@@ -369,7 +370,7 @@ const QStringList &CCommon::namaSektorList()
 
 QString CCommon::namaBulan(int value)
 {
-    if (value < 0 && value >= _namaBulanList.size())
+    if (value < 0 || value >= _namaBulanList.size())
         return QString();
 
     return _namaBulanList[value];
@@ -377,7 +378,7 @@ QString CCommon::namaBulan(int value)
 
 QString CCommon::namaBulanEn(int value)
 {
-    if (value < 0 && value >= _namaBulanEnList.size())
+    if (value < 0 || value >= _namaBulanEnList.size())
         return QString();
 
     return _namaBulanEnList[value];
@@ -385,7 +386,7 @@ QString CCommon::namaBulanEn(int value)
 
 QString CCommon::namaBulanId(int value)
 {
-    if (value < 0 && value >= _namaBulanIdList.size())
+    if (value < 0 || value >= _namaBulanIdList.size())
         return QString();
 
     return _namaBulanIdList[value];
@@ -393,7 +394,7 @@ QString CCommon::namaBulanId(int value)
 
 QString CCommon::namaUserGroup(int value)
 {
-    if (value < 0 && value >= _namaUserGroupList.size())
+    if (value < 0 || value >= _namaUserGroupList.size())
         return QString();
 
     return _namaUserGroupList[value];
@@ -401,7 +402,7 @@ QString CCommon::namaUserGroup(int value)
 
 QString CCommon::namaJabatan(int value)
 {
-    if (value < 0 && value >= _namaJabatanList.size())
+    if (value < 0 || value >= _namaJabatanList.size())
         return QString();
 
     return _namaJabatanList[value];
@@ -409,7 +410,7 @@ QString CCommon::namaJabatan(int value)
 
 QString CCommon::namaPangkat(int value)
 {
-    if (value < 0 && value >= _namaPangkatList.size())
+    if (value < 0 || value >= _namaPangkatList.size())
         return QString();
 
     return _namaPangkatList[value];
@@ -417,7 +418,7 @@ QString CCommon::namaPangkat(int value)
 
 QString CCommon::namaGolongan(int value)
 {
-    if (value < 0 && value >= _namaGolonganList.size())
+    if (value < 0 || value >= _namaGolonganList.size())
         return QString();
 
     return _namaGolonganList[value];
@@ -425,7 +426,7 @@ QString CCommon::namaGolongan(int value)
 
 QString CCommon::namaJenisSeksi(int value)
 {
-    if (value < 0 && value >= _namaJenisSeksiList.size())
+    if (value < 0 || value >= _namaJenisSeksiList.size())
         return QString();
 
     return _namaJenisSeksiList[value];
@@ -433,7 +434,7 @@ QString CCommon::namaJenisSeksi(int value)
 
 QString CCommon::namaSektor(int value)
 {
-    if (value < 0 && value >= _namaSektorList.size())
+    if (value < 0 || value >= _namaSektorList.size())
         return QString();
 
     return _namaSektorList[value];
@@ -441,7 +442,7 @@ QString CCommon::namaSektor(int value)
 
 QString CCommon::namaKdmapGroup(int value)
 {
-    if (value < 0 && value >= _namaKdmapGroupList.size())
+    if (value < 0 || value >= _namaKdmapGroupList.size())
         return QString();
 
     return _namaKdmapGroupList[value];

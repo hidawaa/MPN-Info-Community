@@ -2,21 +2,24 @@
 
 #include <QCoreApplication>
 #include <QFile>
-#include <QMessageBox>
 #include <QDir>
 #include <QPluginLoader>
 #include <QSqlQuery>
 #include <QThreadPool>
 #include <QCryptographicHash>
+#include <QMessageBox>
 #include <QDebug>
 
 #include <interface.h>
 #include <window.h>
 
-#include "databaseconnectiondialog.h"
+#include "cdata.h"
 #include "ccommon.h"
 #include "cdatabase.h"
 #include "crunnable.h"
+
+#include "databaseconnectiondialog.h"
+#include "settingsdialog.h"
 
 const char *chiperPassword = "MpnInfoDatabase";
 
@@ -54,18 +57,18 @@ bool Engine::connectDatabase()
         do {
             QSqlDatabase::removeDatabase(mDatabaseConnectionName);
 
-            int driver =  mSettings.value("Database/type").toInt();
+            int driver =  mSettings.value(IDS_DATABASE_TYPE).toInt();
             mDatabaseConnectionName = common()->randomString(16);
 
             QSqlDatabase db;
             if (driver == DatabaseMysql) {
                 QString driverName = "QMYSQL";
-                QString hostName =  mSettings.value("Database/host").toString();
-                QStringList authList = common()->decrypt(mSettings.value("Database/auth").toString()).split(";");
+                QString hostName =  mSettings.value(IDS_DATABASE_HOST).toString();
+                QStringList authList = common()->decrypt(mSettings.value(IDS_DATABASE_AUTH).toString()).split(";");
                 QString databaseName = authList[0];
                 QString username = authList.size() > 1? authList[1] : QString();
                 QString password = authList.size() > 2? authList[2] : QString();
-                QString options =  mSettings.value("Database/options").toString();
+                QString options =  mSettings.value(IDS_DATABASE_OPTIONS).toString();
 
                 if (options.isEmpty())
                     options = "MYSQL_OPT_RECONNECT=1";
@@ -79,13 +82,13 @@ bool Engine::connectDatabase()
                 db.open();
             }
             else if (driver == DatabaseSqlite) {
-                QString databaseName = mSettings.value("Database/name").toString();
+                QString databaseName = mSettings.value(IDS_DATABASE_NAME).toString();
                 if (databaseName.isEmpty())
                     databaseName = "test.db";
 
-                bool encrypt = mSettings.value("Database/encrypt").toBool();
+                bool encrypt = mSettings.value(IDS_DATABASE_ENCRYPTED).toBool();
                 QString driverName = encrypt? "QSQLCIPHER" : "QSQLITE";
-                QString options =  mSettings.value("Database/options").toString();
+                QString options =  mSettings.value(IDS_DATABASE_OPTIONS).toString();
 
                 db = QSqlDatabase::addDatabase(driverName, mDatabaseConnectionName);
                 db.setDatabaseName(databaseName);
@@ -93,13 +96,13 @@ bool Engine::connectDatabase()
                 db.open();
             }
             else if (driver == DatabaseOther) {
-                QString driverName =  mSettings.value("Database/driver").toString();
-                QString hostName =  mSettings.value("Database/host").toString();
-                QStringList authList = common()->decrypt(mSettings.value("Database/auth").toString()).split(";");
+                QString driverName =  mSettings.value(IDS_DATABASE_DRIVER).toString();
+                QString hostName =  mSettings.value(IDS_DATABASE_HOST).toString();
+                QStringList authList = common()->decrypt(mSettings.value(IDS_DATABASE_AUTH).toString()).split(";");
                 QString databaseName = authList[0];
                 QString username = authList.size() > 1? authList[1] : QString();
                 QString password = authList.size() > 2? authList[2] : QString();
-                QString options =  mSettings.value("Database/options").toString();
+                QString options =  mSettings.value(IDS_DATABASE_OPTIONS).toString();
 
                 db = QSqlDatabase::addDatabase(driverName, mDatabaseConnectionName);
                 db.setHostName(hostName);
@@ -134,15 +137,15 @@ bool Engine::connectDatabase()
             if (dialog.exec() == QDialog::Rejected)
                 break;
 
-            mSettings.setValue("Database/type", dialog.driver());
+            mSettings.setValue(IDS_DATABASE_TYPE, dialog.driver());
             if (dialog.driver() == DatabaseMysql) {
                 QString auth = QString("%1;%2;%3").arg(dialog.database(), dialog.username(), dialog.password());
 
-                mSettings.setValue("Database/host", dialog.hostname());
-                mSettings.setValue("Database/auth", common()->encrypt(auth));
-                mSettings.setValue("Database/options", dialog.options());
+                mSettings.setValue(IDS_DATABASE_HOST, dialog.hostname());
+                mSettings.setValue(IDS_DATABASE_AUTH, common()->encrypt(auth));
+                mSettings.setValue(IDS_DATABASE_OPTIONS, dialog.options());
 
-                mSettings.remove("Database/driver");
+                mSettings.remove(IDS_DATABASE_DRIVER);
             }
             else if (dialog.driver() == DatabaseSqlite) {
                 bool encrypt = false;
@@ -150,34 +153,29 @@ bool Engine::connectDatabase()
                     encrypt = true;
 
                 if (encrypt)
-                    mSettings.setValue("Database/encrypt", true);
+                    mSettings.setValue(IDS_DATABASE_ENCRYPTED, true);
                 else
-                    mSettings.remove("Database/encrypt");
+                    mSettings.remove(IDS_DATABASE_ENCRYPTED);
 
-                mSettings.setValue("Database/name", dialog.database());
-                mSettings.setValue("Database/options", dialog.options());
+                mSettings.setValue(IDS_DATABASE_NAME, dialog.database());
+                mSettings.setValue(IDS_DATABASE_OPTIONS, dialog.options());
 
-                mSettings.remove("Database/driver");
-                mSettings.remove("Database/host");
-                mSettings.remove("Database/auth");
+                mSettings.remove(IDS_DATABASE_DRIVER);
+                mSettings.remove(IDS_DATABASE_HOST);
+                mSettings.remove(IDS_DATABASE_AUTH);
             }
             else {
                 QString auth = QString("%1;%2;%3").arg(dialog.database(), dialog.username(), dialog.password());
 
-                mSettings.setValue("Database/driver", dialog.driverName());
-                mSettings.setValue("Database/host", dialog.hostname());
-                mSettings.setValue("Database/auth", common()->encrypt(auth));
-                mSettings.setValue("Database/options", dialog.options());
+                mSettings.setValue(IDS_DATABASE_DRIVER, dialog.driverName());
+                mSettings.setValue(IDS_DATABASE_HOST, dialog.hostname());
+                mSettings.setValue(IDS_DATABASE_AUTH, common()->encrypt(auth));
+                mSettings.setValue(IDS_DATABASE_OPTIONS, dialog.options());
             }
         } while (true);
     }
 
     return mDatabase.isOpen();
-}
-
-void Engine::loadData()
-{
-
 }
 
 void Engine::loadAddons()
@@ -270,19 +268,55 @@ bool Engine::login(const QString &uname, const QString &pwd)
             success = true;
     }
 
-    if (success) {
-        mUser.username = uname;
-        mUser.group = GroupTypes(group);
+    if (!success)
+        return false;
 
-        if (mUser.group == GroupAdministrator)
-            mUser.permission = AddOnAdministrators;
-        else if (mUser.group == GroupUser)
-            mUser.permission = AddOnUsers;
-        else if (mUser.group == GroupGuest)
-            mUser.permission = AddOnGuest;
+    mUser.username = uname;
+    mUser.group = GroupTypes(group);
+
+    if (mUser.group == GroupAdministrator)
+        mUser.permission = AddOnAdministrators;
+    else if (mUser.group == GroupUser)
+        mUser.permission = AddOnUsers;
+    else if (mUser.group == GroupGuest)
+        mUser.permission = AddOnGuest;
+
+    return true;
+}
+
+void Engine::setKantor(const QString &kantor)
+{
+    mKantor = data()->kantor(kantor);
+}
+
+void Engine::setKantor(const Kantor &kantor)
+{
+    mKantor = kantor;
+}
+
+bool Engine::load()
+{
+    {
+        ObjectPtr loadingDialog = addOn("dialog_loading")->newObject();
+        loadingDialog->exec("setMessage", "Loading Data");
+        loadingDialog->exec("show");
+
+        static_cast<CData *>(data())->load();
     }
 
-    return success;
+    QString kodeKantor = databaseSettings()->value(IDS_SERVER_KANTOR_KODE).toString();
+    if (kodeKantor.isEmpty()) {
+        do {
+            QMessageBox::information(nullptr, "Information", "Detail Kantor belum diatur. Silahkan atur terlebih dahulu.");
+            SettingsDialog dialog;
+            if (dialog.exec() == QDialog::Rejected)
+                return false;
+        } while (mKantor.kode.isEmpty());
+    }
+    else
+        setKantor(kodeKantor);
+
+    return true;
 }
 
 DatabasePtr Engine::database()
@@ -298,6 +332,15 @@ DatabasePtr Engine::database()
     db.open();
 
     return DatabasePtr(new CDatabase(db));
+}
+
+CoreData *Engine::data()
+{
+    if (mUser.username.isEmpty())
+        return nullptr;
+
+    static CData cdata;
+    return &cdata;
 }
 
 Common *Engine::common()
@@ -335,176 +378,12 @@ QStringList Engine::availableAddOns()
 
 void Engine::run(void (*cb)(void *, void *), void *data, void *result)
 {
-    CRunnable *runnable = new CRunnable(cb, data, result);
-    runnable->setAutoDelete(true);
+    QScopedPointer<CRunnable> runnable(new CRunnable(cb, data, result));
+    runnable->setAutoDelete(false);
 
-    QThreadPool::globalInstance()->start(runnable);
-
-    while (runnable->finished()) {
+    QThreadPool::globalInstance()->start(runnable.data());
+    while (!runnable->finished()) {
         qApp->processEvents();
         QThread::msleep(10);
     }
 }
-
-Kantor Engine::kantor(const QString &kode) const
-{
-    if (mUser.username.isEmpty())
-        return Kantor();
-
-    return mKantorMap[kode];
-}
-
-const KantorMap &Engine::kantorMap()
-{
-    if (mUser.username.isEmpty())
-        return emptyKantorMap;
-
-    return mKantorMap;
-}
-
-KantorList Engine::kanwilList()
-{
-    KantorList list;
-    if (mUser.username.isEmpty())
-        return list;
-
-    QMapIterator<QString, Kantor> iterator(mKantorMap);
-    while (iterator.hasNext()) {
-        iterator.next();
-
-        if (iterator.value().kpp.isEmpty())
-            list << iterator.value();
-    }
-
-    return list;
-}
-
-KantorList Engine::kppList()
-{
-    KantorList list;
-    if (mUser.username.isEmpty())
-        return list;
-
-    QMapIterator<QString, Kantor> iterator(mKantorMap);
-    while (iterator.hasNext()) {
-        iterator.next();
-
-        if (!iterator.value().kpp.isEmpty())
-            list << iterator.value();
-    }
-
-    return list;
-}
-
-KantorList Engine::kppList(const QString &kanwil)
-{
-    KantorList list;
-    if (mUser.username.isEmpty())
-        return list;
-
-    foreach (const Kantor &kantor, kppList()) {
-        if (kantor.kanwil == kanwil)
-            list << kantor;
-    }
-
-    return list;
-};
-
-Seksi Engine::seksi(int id) const
-{
-    if (mUser.username.isEmpty())
-        return Seksi();
-
-    return mSeksiMap[id];
-}
-
-const SeksiMap &Engine::seksiMap()
-{
-    if (mUser.username.isEmpty())
-        return emptySeksiMap;
-
-    return mSeksiMap;
-}
-
-SeksiList Engine::seksiList()
-{
-    SeksiList list;
-    if (mUser.username.isEmpty())
-        return list;
-
-    QMapIterator<int, Seksi> iterator(mSeksiMap);
-    while (iterator.hasNext()) {
-        iterator.next();
-
-        list << iterator.value();
-    }
-
-    return list;
-}
-
-Pegawai Engine::pegawai(const QString &nip) const
-{
-    if (mUser.username.isEmpty())
-        return Pegawai();
-
-    return mPegawaiHash[nip];
-}
-
-const PegawaiHash &Engine::pegawaiHash()
-{
-    if (mUser.username.isEmpty())
-        return emptyPegawaiHash;
-
-    return mPegawaiHash;
-}
-
-PegawaiList Engine::pegawaiList()
-{
-    PegawaiList list;
-    if (mUser.username.isEmpty())
-        return list;
-
-    QHashIterator<QString, Pegawai> iterator(mPegawaiHash);
-    while (iterator.hasNext()) {
-        iterator.next();
-
-        list << iterator.value();
-    }
-
-    return list;
-}
-
-WajibPajak Engine::wajibPajak(const QString &npwp) const
-{
-    if (mUser.username.isEmpty())
-        return WajibPajak();
-
-    if (mWajibPajakHash.contains(npwp))
-        return mWajibPajakHash[npwp];
-
-    return WajibPajak();
-}
-
-QList<WajibPajak> Engine::wajibPajak(const QString &npwp, const QString &kpp, const QString &cabang)
-{
-    QList<WajibPajak> wpList;
-    if (mUser.username.isEmpty())
-        return wpList;
-
-    QString npwpfull = npwp + kpp + cabang;
-    foreach (const QString &key, emptyWajibPajakHash.keys()) {
-        if (key.left(npwpfull.size()) == npwpfull)
-            wpList << mWajibPajakHash[key];
-    }
-
-    return wpList;
-}
-
-const WajibPajakHash &Engine::wajibPajakHash()
-{
-    if (mUser.username.isEmpty())
-        return emptyWajibPajakHash;
-
-    return mWajibPajakHash;
-}
-

@@ -13,6 +13,7 @@ public:
 
     void setValue(const QString &key, const QVariant &value);
     QVariant value(const QString &key);
+    QVariant remove(const QString &key);
 
 private:
     CoreEngine *mEngine;

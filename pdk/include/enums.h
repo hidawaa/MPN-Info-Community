@@ -15,6 +15,11 @@ enum GroupTypes {
     GroupGuest
 };
 
+enum KantorTypes {
+    Kanwil = 0,
+    Kpp
+};
+
 enum JabatanTypes {
     JabatanUnknown = -1,
     JabatanKepalaKantor,
