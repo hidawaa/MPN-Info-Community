@@ -8,22 +8,20 @@ class CRunnable : public QRunnable
 {
 public:
     CRunnable(void (* fn)(void *, void *), void *dat = nullptr, void *res = nullptr) :
-        foo(fn), data(dat), result(res), running(true) {}
+        foo(fn), data(dat), result(res), finish(false) {}
 
-    bool isRunning() {
-        return running;
-    }
+    bool finished() { return finish; }
 
     void run() {
         foo(data, result);
-        running = false;
+        finish = true;
     }
 
 private:
     void (* foo)(void *, void *);
     void *data;
     void *result;
-    bool running;
+    bool finish;
 };
 
 #endif // CRUNNABLE_H

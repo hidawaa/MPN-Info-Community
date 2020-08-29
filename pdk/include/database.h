@@ -16,6 +16,8 @@ public:
     virtual void exec() = 0;
     virtual void exec(const QString &query) = 0;
 
+    virtual QString lastExecuted() = 0;
+
     virtual int numRowsffected() = 0;
     virtual bool next() = 0;
     virtual QVariant value(int i) = 0;

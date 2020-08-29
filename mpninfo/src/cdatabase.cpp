@@ -49,6 +49,31 @@ void CDatabase::exec()
     mData->query.exec();
 }
 
+QString CDatabase::lastExecuted() {
+    QString str = mData->query.lastQuery();
+    QMapIterator<QString, QVariant> it(mData->query.boundValues());
+    it.toBack();
+    while (it.hasPrevious())
+    {
+        it.previous();
+
+        QString value = it.value().toString();
+        switch (it.value().type())
+        {
+        case QVariant::String:
+        case QVariant::Date:
+            value = QString("'%1'").arg(value);
+            break;
+        default:
+            break;
+        }
+
+        str.replace(it.key(), value);
+    }
+
+    return str;
+}
+
 int CDatabase::numRowsffected()
 {
     return mData->query.numRowsAffected();
@@ -63,7 +88,6 @@ QVariant CDatabase::value(int i)
 {
     return mData->query.value(i);
 }
-
 
 QVariant CDatabase::value(const QString &name)
 {

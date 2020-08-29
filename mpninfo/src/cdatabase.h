@@ -24,6 +24,8 @@ public:
     void exec();
     void exec(const QString &query);
 
+    QString lastExecuted();
+
     int numRowsffected();
     bool next();
     QVariant value(int i);

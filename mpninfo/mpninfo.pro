@@ -31,7 +31,6 @@ SOURCES += \
     src/simplecrypt.cpp
 
 HEADERS += \
-    ../pdk/include/common.h \
     src/ccommon.h \
     src/cdatabase.h \
     src/crunnable.h \

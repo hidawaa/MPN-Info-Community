@@ -55,7 +55,7 @@ bool Engine::connectDatabase()
             QSqlDatabase::removeDatabase(mDatabaseConnectionName);
 
             int driver =  mSettings.value("Database/type").toInt();
-            mDatabaseConnectionName = common()->generateRandomId(16);
+            mDatabaseConnectionName = common()->randomString(16);
 
             QSqlDatabase db;
             if (driver == DatabaseMysql) {
@@ -287,7 +287,7 @@ bool Engine::login(const QString &uname, const QString &pwd)
 
 DatabasePtr Engine::database()
 {
-    QString connectionName = common()->generateRandomId(16);
+    QString connectionName = common()->randomString(16);
 
     QSqlDatabase db = QSqlDatabase::addDatabase(mDatabase.driverName(), connectionName);
     db.setHostName(mDatabase.hostName());
@@ -340,7 +340,7 @@ void Engine::run(void (*cb)(void *, void *), void *data, void *result)
 
     QThreadPool::globalInstance()->start(runnable);
 
-    while (runnable->isRunning()) {
+    while (runnable->finished()) {
         qApp->processEvents();
         QThread::msleep(10);
     }

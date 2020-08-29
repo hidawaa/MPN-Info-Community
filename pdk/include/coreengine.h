@@ -11,44 +11,6 @@
 #include "window.h"
 #include "interface.h"
 
-enum DatabaseTypes {
-    DatabaseUnknown = 0,
-    DatabaseMysql,
-    DatabaseSqlite,
-    DatabaseOther
-};
-
-enum GroupTypes {
-    GroupUnknown = -1,
-    GroupAdministrator,
-    GroupUser,
-    GroupGuest
-};
-
-enum JabatanTypes {
-    JabatanUnknown = -1,
-    JabatanKepalaKantor,
-    JabatanKepalaSeksi,
-    JabatanFungsionalPemeriksa,
-    JabatanOperatorConsole,
-    JabatanAccountRepresentativePelayanan,
-    JabatanAccountRepresentativePengawasan,
-    JabatanPelaksana
-};
-
-enum SeksiTypes {
-    SeksiUnknown = -1,
-    SeksiKepalaKantor,
-    SeksiSubbagianUmum,
-    SeksiPengolahanDataDanInformasi,
-    SeksiPelayanan,
-    SeksiPenagihan,
-    SeksiPengawasanDanKonsultasiPelayanan,
-    SeksiPengawasanDanKonsultasiPengawasan,
-    SeksiEkstensifikasiPerpajakan,
-    SeksiPemeriksaanDanKepatuhanInternal
-};
-
 struct User {
     QString username;
     int group { -1 };
