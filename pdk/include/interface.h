@@ -58,8 +58,8 @@ public:
     Page(QWidget *parent = nullptr) : Widget(parent) {}
     virtual ~Page() { qDebug() << "DELETED"; }
 
-    virtual QStringList keys() = 0;
-    virtual QVariant exec(const QString &key, const QVariant &arg = QVariant()) = 0;
+    virtual QStringList keys() { return QStringList(); }
+    virtual QVariant exec(const QString &key, const QVariant &arg = QVariant()) { return QVariant(); }
 };
 
 typedef  QSharedPointer<Page> PagePtr;
