@@ -72,9 +72,10 @@ public:
     virtual AddOnTypes type() = 0;
     virtual int loadFlags() = 0;
     virtual int permission() = 0;
-    virtual ObjectPtr newObject() = 0;
-    virtual PagePtr newPage() = 0;
-    virtual ProcessPtr newProcess() = 0;
+    virtual ObjectPtr newObject() { return nullptr; }
+    virtual QWidget *newWidget() { return nullptr; }
+    virtual PagePtr newPage() { return nullptr; }
+    virtual ProcessPtr newProcess() { return nullptr; }
 
     CoreEngine *engine;
 };
