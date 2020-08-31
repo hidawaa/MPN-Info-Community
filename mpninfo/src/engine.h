@@ -89,7 +89,6 @@
 #define IDS_SERVER_SHARED_DATA_FOLDER_PATH                      "shareddata.path"
 #define IDS_SERVER_SHARED_DATA_AS_TEMPLATE                      "shareddata.asTemplate"
 
-class Window;
 class Engine : public CoreEngine
 {
     Q_OBJECT
@@ -128,7 +127,7 @@ public:
     void setWindow(Window *window) { mWindow = window; }
     Window *window() { return mWindow; }
 
-    void run(void (*foo)(void *, void *), void *data = nullptr, void *result = nullptr);
+    void runSync(Runnable *runnable);
 
 private:
     Engine(QObject *parent = nullptr);

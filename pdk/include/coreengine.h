@@ -10,6 +10,7 @@
 #include "common.h"
 #include "window.h"
 #include "interface.h"
+#include "runnable.h"
 
 struct User {
     QString username;
@@ -49,7 +50,7 @@ public:
     virtual Common *common() = 0;
     virtual Window *window() = 0;
 
-    virtual void run(void (*foo)(void *, void *), void *data = nullptr, void *result = nullptr) = 0;
+    virtual void runSync(Runnable *runnable) = 0;
 };
 
 #endif // COREENGINE_H

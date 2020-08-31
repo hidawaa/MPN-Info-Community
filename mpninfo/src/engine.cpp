@@ -10,13 +10,10 @@
 #include <QMessageBox>
 #include <QDebug>
 
-#include <interface.h>
 #include <window.h>
-
 #include "cdata.h"
 #include "ccommon.h"
 #include "cdatabase.h"
-#include "crunnable.h"
 
 #include "databaseconnectiondialog.h"
 #include "settingsdialog.h"
@@ -296,13 +293,7 @@ void Engine::setKantor(const Kantor &kantor)
 
 bool Engine::load()
 {
-    {
-        ObjectPtr loadingDialog = addOn("dialog_loading")->newObject();
-        loadingDialog->exec("setMessage", "Loading Data");
-        loadingDialog->exec("show");
-
-        static_cast<CData *>(data())->load();
-    }
+    static_cast<CData *>(data())->load();
 
     QString kodeKantor = databaseSettings()->value(IDS_SERVER_KANTOR_KODE).toString();
     if (kodeKantor.isEmpty()) {
@@ -376,13 +367,13 @@ QStringList Engine::availableAddOns()
     return mAddOnMap.keys();
 }
 
-void Engine::run(void (*cb)(void *, void *), void *data, void *result)
+void Engine::runSync(Runnable *runnable)
 {
-    QScopedPointer<CRunnable> runnable(new CRunnable(cb, data, result));
-    runnable->setAutoDelete(false);
+    runnable->setAutoDelete(true);
+    QPointer<Runnable> ptr(runnable);
+    QThreadPool::globalInstance()->start(runnable);
 
-    QThreadPool::globalInstance()->start(runnable.data());
-    while (!runnable->finished()) {
+    while (!ptr.isNull()) {
         qApp->processEvents();
         QThread::msleep(10);
     }

@@ -8,13 +8,14 @@
 
 enum AddOnTypes {
     AddOnObject = 0,
+    AddOnWidget,
     AddOnPage,
     AddOnProcess
 };
 
 enum AddOnFlags {
-    AddOnCreateMenu          = 1,
-    AddOnExecAtStart         = 2,
+    AddOnCreateMenu      = 1,
+    AddOnExecAtStart     = 2,
     AddOnExecBeforeLogin = 4,
     AddOnExecAfterLogin  = 16
 };

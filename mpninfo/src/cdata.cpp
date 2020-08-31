@@ -1,12 +1,20 @@
 #include "cdata.h"
 
+#include <QObject>
+#include <runnable.h>
+
 #include "engine.h"
 
-void dataLoad(void *_data, void *) {
-    CDataPrivate *data = static_cast<CDataPrivate *>(_data);
-
+void CRunnable::run() {
     Engine *engine = Engine::instance();
     DatabasePtr db = engine->database();
+
+    (*data).kantorMap.clear();
+    (*data).seksiMap.clear();
+    (*data).pegawaiHash.clear();
+    (*data).wajibPajakHash.clear();
+
+    emit gotMessage("Load data Kantor");
     db->exec("SELECT * FROM `kantor`");
     while (db->next()) {
         QString kanwil = db->value(0).toString();
@@ -26,6 +34,7 @@ void dataLoad(void *_data, void *) {
         kantor.nama = nama;
     }
 
+    emit gotMessage("Load data Seksi");
     db->exec("SELECT * FROM `seksi`");
     while (db->next()) {
         int id = db->value(0).toInt();
@@ -44,6 +53,7 @@ void dataLoad(void *_data, void *) {
         seksi.telp = telp;
     }
 
+    emit gotMessage("Load data Pegawai");
     db->exec("SELECT * FROM `pegawai`");
     while (db->next()) {
         QString nip = db->value(1).toString();
@@ -77,6 +87,7 @@ void dataLoad(void *_data, void *) {
         p.plh = plh;
     }
 
+    emit gotMessage("Load data WajibPajak");
     db->exec("SELECT * FROM `wp`");
     while (db->next()) {
         QString admin = db->value(0).toString();
@@ -131,13 +142,18 @@ void dataLoad(void *_data, void *) {
 
 void CData::load()
 {
-    mData.kantorMap.clear();
-    mData.seksiMap.clear();
-    mData.pegawaiHash.clear();
-    mData.wajibPajakHash.clear();
-
     Engine *engine = Engine::instance();
-    engine->run(&dataLoad, &mData);
+
+    ObjectPtr loadingDialog = engine->addOn("dialog_loading")->newObject();
+    loadingDialog->exec("setMessage", "Loading Data");
+    loadingDialog->exec("show");
+
+    CRunnable *runnable = new CRunnable(&mData);
+    QObject::connect(runnable, &CRunnable::gotMessage, [loadingDialog](const QString &message) {
+        loadingDialog->exec("setMessage", message);
+    });
+
+    engine->runSync(runnable);
 }
 
 Kantor CData::kantor(const QString &kode) const

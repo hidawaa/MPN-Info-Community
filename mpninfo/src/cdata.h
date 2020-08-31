@@ -2,12 +2,28 @@
 #define CDATA_H
 
 #include <coredata.h>
+#include <runnable.h>
 
 struct CDataPrivate {
     KantorMap kantorMap;
     SeksiMap seksiMap;
     PegawaiHash pegawaiHash;
     WajibPajakHash wajibPajakHash;
+};
+
+class CRunnable : public Runnable
+{
+    Q_OBJECT
+public:
+    CRunnable(CDataPrivate *_data) : data(_data) {}
+
+    void run();
+
+signals:
+    void gotMessage(const QString &message);
+
+private:
+    CDataPrivate *data;
 };
 
 class CData : public CoreData
