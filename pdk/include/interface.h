@@ -86,7 +86,7 @@ public:
     virtual int loadFlags() = 0;
     virtual int permission() = 0;
     virtual ObjectPtr newObject() { return nullptr; }
-    virtual QWidget *newWidget() { return nullptr; }
+    virtual WidgetPtr *newWidget() { return nullptr; }
     virtual PagePtr newPage() { return nullptr; }
     virtual ProcessPtr newProcess() { return nullptr; }
 
