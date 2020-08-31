@@ -29,17 +29,6 @@ enum AddOnPermission {
 //! [0]
 class CoreEngine;
 
-class Page : public QWidget
-{
-public:
-    Page(QWidget *parent = nullptr) : QWidget(parent) {}
-    virtual ~Page() { qDebug() << "DELETED"; }
-
-    virtual void setArgs(const QVariant &) {}
-};
-
-typedef  QSharedPointer<Page> PagePtr;
-
 class Object
 {
 public:
@@ -50,6 +39,30 @@ public:
 };
 
 typedef  QSharedPointer<Object> ObjectPtr;
+
+class Widget : public QWidget
+{
+public:
+    Widget(QWidget *parent = nullptr) : QWidget(parent) {}
+    virtual ~Widget() {}
+
+    virtual QStringList keys() = 0;
+    virtual QVariant exec(const QString &key, const QVariant &arg = QVariant()) = 0;
+};
+
+typedef  QSharedPointer<Widget> WidgetPtr;
+
+class Page : public Widget
+{
+public:
+    Page(QWidget *parent = nullptr) : Widget(parent) {}
+    virtual ~Page() { qDebug() << "DELETED"; }
+
+    virtual QStringList keys() = 0;
+    virtual QVariant exec(const QString &key, const QVariant &arg = QVariant()) = 0;
+};
+
+typedef  QSharedPointer<Page> PagePtr;
 
 class Process
 {
