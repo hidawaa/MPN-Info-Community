@@ -36,6 +36,12 @@ public:
 
     virtual QStringList keys() = 0;
     virtual QVariant exec(const QString &key, const QVariant &arg = QVariant()) = 0;
+
+    void setCallback(void (*cb)(const QVariantMap &data, void *userData), void *uData) { callback = cb;  userData = uData; }
+
+private:
+    void (*callback)(const QVariantMap &data, void *userData) { nullptr };
+    void *userData { nullptr } ;
 };
 
 typedef  QSharedPointer<Object> ObjectPtr;
@@ -48,6 +54,12 @@ public:
 
     virtual QStringList keys() = 0;
     virtual QVariant exec(const QString &key, const QVariant &arg = QVariant()) = 0;
+
+    void setCallback(void (*cb)(const QVariantMap &data, void *userData), void *uData) { callback = cb;  userData = uData; }
+
+private:
+    void (*callback)(const QVariantMap &data, void *userData) { nullptr };
+    void *userData { nullptr } ;
 };
 
 typedef  QSharedPointer<Widget> WidgetPtr;
@@ -56,10 +68,10 @@ class Page : public Widget
 {
 public:
     Page(QWidget *parent = nullptr) : Widget(parent) {}
-    virtual ~Page() { qDebug() << "DELETED"; }
+    virtual ~Page() {}
 
     virtual QStringList keys() { return QStringList(); }
-    virtual QVariant exec(const QString &key, const QVariant &arg = QVariant()) { return QVariant(); }
+    virtual QVariant exec(const QString &key, const QVariant &arg = QVariant()) { (void) key; (void) arg; return QVariant(); }
 };
 
 typedef  QSharedPointer<Page> PagePtr;

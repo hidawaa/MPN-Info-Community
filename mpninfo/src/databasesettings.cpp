@@ -43,7 +43,6 @@ QVariant DatabaseSettings::value(const QString &key)
         return db->value(0);
 }
 
-
 QVariant DatabaseSettings::remove(const QString &key)
 {
     DatabasePtr db = mEngine->database();

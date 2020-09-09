@@ -39,6 +39,7 @@ public:
     virtual QString namaGolongan(int value) = 0;
     virtual QString namaJenisSeksi(int value) = 0;
     virtual QString namaSektor(int value) = 0;
+    virtual QString namaSektor(const QString &value) = 0;
     virtual QString namaKdmapGroup(int value) = 0;
 
     virtual int bulanTerlambat(const QDate &value, const QDate &jt, int masa, int tahun, int jenis) = 0;

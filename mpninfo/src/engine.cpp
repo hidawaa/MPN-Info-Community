@@ -14,6 +14,8 @@
 #include "cdata.h"
 #include "ccommon.h"
 #include "cdatabase.h"
+#include "databasesettings.h"
+#include "databaseinfo.h"
 
 #include "databaseconnectiondialog.h"
 #include "settingsdialog.h"
@@ -244,7 +246,7 @@ bool Engine::login(const QString &uname, const QString &pwd)
     if (query.next())
         version = query.value(0).toString();
 
-    query.prepare("SELECT `password`, `group` FROM `users` WHERE `username`=?");
+    query.prepare("SELECT `password`, `id`, `fullname`, `group` FROM `users` WHERE `username`=?");
     query.addBindValue(uname);
     query.exec();
 
@@ -252,7 +254,9 @@ bool Engine::login(const QString &uname, const QString &pwd)
         return false;
 
     QString password = query.value(0).toString();
-    int group = query.value(1).toInt();
+    int id = query.value(1).toInt();
+    QString fullname = query.value(2).toString();
+    int group = query.value(3).toInt();
 
     bool success = false;
     if (version == "4.4") {
@@ -268,8 +272,10 @@ bool Engine::login(const QString &uname, const QString &pwd)
     if (!success)
         return false;
 
+    mUser.id = id;
     mUser.username = uname;
-    mUser.group = GroupTypes(group);
+    mUser.fullname = fullname;
+    mUser.group = group;
 
     if (mUser.group == GroupAdministrator)
         mUser.permission = AddOnAdministrators;
@@ -279,6 +285,23 @@ bool Engine::login(const QString &uname, const QString &pwd)
         mUser.permission = AddOnGuest;
 
     return true;
+}
+
+void Engine::logout()
+{
+    mUser = User();
+    qApp->quit();
+}
+
+void Engine::quit()
+{
+    mRun = false;
+    qApp->quit();
+}
+
+bool Engine::isRunning()
+{
+    return mRun;
 }
 
 void Engine::setKantor(const QString &kantor)
@@ -325,6 +348,11 @@ DatabasePtr Engine::database()
     return DatabasePtr(new CDatabase(db));
 }
 
+QString Engine::workingDirectory()
+{
+    return qApp->applicationDirPath();
+}
+
 CoreData *Engine::data()
 {
     if (mUser.username.isEmpty())
@@ -345,13 +373,22 @@ QSettings *Engine::settings()
     return &mSettings;
 }
 
-DatabaseSettings *Engine::databaseSettings()
+Settings *Engine::databaseSettings()
 {
     if (mUser.username.isEmpty())
         return nullptr;
 
     static DatabaseSettings dbSettings(this);
     return &dbSettings;
+}
+
+Settings *Engine::databaseInfo()
+{
+    if (mUser.username.isEmpty())
+        return nullptr;
+
+    static DatabaseInfo dbInfo(this);
+    return &dbInfo;
 }
 
 AddOnPtr Engine::addOn(const QString &name)

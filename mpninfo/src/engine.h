@@ -8,8 +8,6 @@
 #include <coreengine.h>
 #include <interface.h>
 
-#include "databasesettings.h"
-
 #define IDS_GENERAL_LAST_VERSION                                "lastVersion"
 #define IDS_GENERAL_LAST_USER                                   "lastUser"
 #define IDS_GENERAL_DOWNLOAD_DIR                                "downloadDir"
@@ -107,9 +105,15 @@ public:
     void processAddOnsAfterLogin();
 
     bool login(const QString &username, const QString &password);
+    void logout();
+    void quit();
+
+    bool isRunning();
 
     void setKantor(const QString &kantor);
     void setKantor(const Kantor &kantor);
+
+    QString workingDirectory();
 
     const User &user() { return mUser; }
     const Kantor &kantor() { return mKantor; }
@@ -119,7 +123,8 @@ public:
     DatabasePtr database();
 
     QSettings *settings();
-    DatabaseSettings *databaseSettings();
+    Settings *databaseSettings();
+    Settings *databaseInfo();
 
     AddOnPtr addOn(const QString &name);
     QStringList availableAddOns();
@@ -138,6 +143,7 @@ private:
     Kantor mKantor;
     Window *mWindow;
     AddOnHash mAddOnMap;
+    bool mRun { true };
 };
 
 #endif // ENGINE_H

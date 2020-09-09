@@ -235,8 +235,12 @@ void GeneralPage::updateKpp()
     mKppComboBox->addItem("-");
 
     QString kanwil = mKanwilComboBox->currentData().toString();
-    foreach (const Kantor &kantor,  engine->data()->kppList(kanwil))
+    foreach (const Kantor &kantor,  engine->data()->kppList(kanwil)) {
+        if (kantor.kode == kanwil)
+            continue;
+
         mKppComboBox->addItem(kantor.kode + " - " + kantor.nama, kantor.kode);
+    }
 }
 
 void GeneralPage::save()

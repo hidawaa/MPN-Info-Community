@@ -15,12 +15,30 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void start();
-
     void addPage(PagePtr page, const QString &title);
 
+public slots:
+    void start();
+    void logout();
+    void quit();
+
+    void onMap();
+    void onKlu();
+
+    void onChangePassword();
+    void onManageSeksi();
+    void onManagePegawai();
+    void onManageUser();
+    void onSettings();
+
+    void onChangelog();
+    void onManual();
+    void onAbout();
+
+protected:
+    void closeEvent(QCloseEvent *event);
+
 private slots:
-    void load();
     void removePage(int index);
     void onAddOnActionTriggered();
 

@@ -12,12 +12,6 @@
 #include "interface.h"
 #include "runnable.h"
 
-struct User {
-    QString username;
-    int group { -1 };
-    int permission { 0 };
-};
-
 typedef QHash<QString, WajibPajak> WajibPajakHash;
 
 class Settings
@@ -30,11 +24,14 @@ public:
     virtual QVariant remove(const QString &key) = 0;
 };
 
+
 class CoreEngine : public QObject
 {
 public:
     CoreEngine(QObject *parent = nullptr) : QObject(parent) {}
     virtual ~CoreEngine() {}
+
+    virtual QString workingDirectory() = 0;
 
     virtual const User &user() = 0;
     virtual const Kantor &kantor() = 0;
@@ -43,6 +40,7 @@ public:
 
     virtual QSettings *settings() = 0;
     virtual Settings *databaseSettings() = 0;
+    virtual Settings *databaseInfo() = 0;
 
     virtual AddOnPtr addOn(const QString &name) = 0;
     virtual QStringList availableAddOns() = 0;

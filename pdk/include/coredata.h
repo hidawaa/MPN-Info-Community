@@ -6,6 +6,14 @@
 #include <QMap>
 #include <QHash>
 
+struct User {
+    int id { 0 };
+    QString username;
+    QString fullname;
+    int group { -1 };
+    int permission { 0 };
+};
+
 struct Kantor {
     int type { -1 };
     QString kode;
@@ -35,7 +43,7 @@ struct Seksi {
     QString telp;
 };
 
-typedef QMap<int, Seksi> SeksiMap;
+typedef QMap<QString, Seksi> SeksiMap;
 typedef QList<Seksi> SeksiList;
 
 struct Pegawai {
@@ -94,13 +102,11 @@ public:
     virtual KantorList kppList() = 0;
     virtual KantorList kppList(const QString &kanwil) = 0;
 
-    virtual Seksi seksi(int id) const = 0;
-    virtual const SeksiMap &seksiMap() = 0;
-    virtual SeksiList seksiList() = 0;
+    virtual Seksi seksi(const QString &kodeKantor, int id) const = 0;
+    virtual SeksiList seksiList(const QString &kodeKantor) = 0;
 
-    virtual Pegawai pegawai(const QString &nip, int tahun = 0) const = 0;
-    virtual const PegawaiHash &pegawaiHash() = 0;
-    virtual PegawaiList pegawaiList() = 0;
+    virtual Pegawai pegawai(const QString &kodeKantor, int tahun, const QString &nip) const = 0;
+    virtual PegawaiList pegawaiList(const QString &kodeKantor, int tahun) = 0;
 
     virtual WajibPajak wajibPajak(const QString &npwp) const = 0;
     virtual QList<WajibPajak> wajibPajak(const QString &npwp, const QString &kpp = QString(), const QString &cabang = QString()) = 0;

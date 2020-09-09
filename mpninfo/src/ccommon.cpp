@@ -440,6 +440,17 @@ QString CCommon::namaSektor(int value)
     return _namaSektorList[value];
 }
 
+QString CCommon::namaSektor(const QString &value)
+{
+    if (value < "A" || value > "U")
+        return QString();
+
+    char c = value.toStdString().c_str()[0];
+    char a = 'A';
+
+    return _namaSektorList[int(c - a)];
+}
+
 QString CCommon::namaKdmapGroup(int value)
 {
     if (value < 0 || value >= _namaKdmapGroupList.size())

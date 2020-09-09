@@ -19,9 +19,11 @@ LoginDialog::LoginDialog(QWidget *parent) :
     mUsernameText = new QLineEdit;
     mUsernameText->setToolTip("Username");
     mUsernameText->setFocus(Qt::OtherFocusReason);
+    mUsernameText->setMinimumWidth(150);
     mPasswordText = new QLineEdit;
     mPasswordText->setToolTip("Password");
     mPasswordText->setEchoMode(QLineEdit::Password);
+    mPasswordText->setMinimumWidth(150);
 
     mOkButton = new QPushButton("&Login");
 
@@ -47,7 +49,6 @@ LoginDialog::LoginDialog(QWidget *parent) :
 void LoginDialog::clear()
 {
     mPasswordText->clear();
-
     mUsernameText->setFocus();
 }
 

@@ -3,11 +3,14 @@
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
+
 #include <database.h>
 
+class CDatabaseCompatibility;
 struct CDatabaseData {
     QSqlDatabase database;
     QSqlQuery query;
+    QScopedPointer<CDatabaseCompatibility> compatibility;
 };
 
 class CDatabase : public Database
@@ -26,11 +29,13 @@ public:
 
     QString lastExecuted();
 
-    int numRowsffected();
+    int numRowsAffected();
     bool next();
     QVariant value(int i);
     QVariant value(const QString &name);
     int size();
+
+    DatabaseCompatilbility *compatibility();
 
 private:
     QScopedPointer<CDatabaseData> mData;

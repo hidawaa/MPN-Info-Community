@@ -13,25 +13,20 @@ struct CDataPrivate {
 
 class CRunnable : public Runnable
 {
-    Q_OBJECT
 public:
-    CRunnable(CDataPrivate *_data) : data(_data) {}
+    CRunnable(CDataPrivate *_data, const QStringList &_nameList) : data(_data), nameList(_nameList) {}
 
     void run();
 
-signals:
-    void gotMessage(const QString &message);
-
 private:
     CDataPrivate *data;
+    QStringList nameList;
 };
 
 class CData : public CoreData
 {
 public:
     CData() {}
-
-    void load();
 
     Kantor kantor(const QString &kode) const;
     const KantorMap &kantorMap();
@@ -40,17 +35,34 @@ public:
     KantorList kppList();
     KantorList kppList(const QString &kanwil);
 
-    Seksi seksi(int id) const;
-    const SeksiMap &seksiMap();
-    SeksiList seksiList();
+    Seksi seksi(const QString &kodeKantor, int id) const;
+    SeksiList seksiList(const QString &kodeKantor);
 
-    Pegawai pegawai(const QString &nip, int tahun = 0) const;
-    const PegawaiHash &pegawaiHash();
-    PegawaiList pegawaiList();
+    Pegawai pegawai(const QString &kodeKantor, int tahun, const QString &nip) const;
+    PegawaiList pegawaiList(const QString &kodeKantor, int tahun);
 
     WajibPajak wajibPajak(const QString &npwp) const;
     QList<WajibPajak> wajibPajak(const QString &npwp, const QString &kpp = QString(), const QString &cabang = QString());
     const WajibPajakHash &wajibPajakHash();
+
+    void load(const QStringList &nameList = QStringList());
+
+    User user(int id);
+    User user(const QString &nip);
+    QList<User> userList();
+
+    bool addUser(const QString &username, const QString &password, const QString &fullname, int group);
+    bool deleteUser(int id);
+    bool deleteUser(const QString &username);
+    bool updateUser(int id, const QString &username, const QString &password, const QString &fullname, int group);
+
+    bool addSeksi(const QString &kodeKantor, int type, const QString &nama, const QString &kode, const QString &telp);
+    bool updateSeksi(int id, const QString &kodeKantor, int type, const QString &nama, const QString &kode, const QString &telp);
+    bool removeSeksi(int id, const QString &kodeKantor);
+
+    bool addPegawai(const QString &kantor, const QString &nip, const QString &nip2, const QString &nama, int seksi, int pangkat, int jabatan, const QString &plh, int tahun);
+    bool updatePegawai(const QString &kantor, const QString &nip, const QString &nip2, const QString &nama, int seksi, int pangkat, int jabatan, const QString &plh, int tahun);
+    bool deletePegawai(const QString &kantor, const QString &nip, int tahun );
 
 private:
     CDataPrivate mData;

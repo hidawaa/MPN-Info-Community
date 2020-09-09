@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QRunnable>
 
-class Runnable : public QObject, public QRunnable
+class Runnable : public QRunnable, public QObject
 {
 public:
     virtual void run() = 0;

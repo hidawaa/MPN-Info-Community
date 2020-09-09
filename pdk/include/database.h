@@ -2,6 +2,17 @@
 #define DATABASE_H
 
 #include <QVariant>
+#include <QSharedPointer>
+
+class DatabaseCompatilbility
+{
+public:
+    virtual ~DatabaseCompatilbility() {}
+
+    virtual void truncateTable(const QString &table) = 0;
+    virtual void beginTransaction() = 0;
+    virtual void endTransaction() = 0;
+};
 
 class Database
 {
@@ -18,11 +29,13 @@ public:
 
     virtual QString lastExecuted() = 0;
 
-    virtual int numRowsffected() = 0;
+    virtual int numRowsAffected() = 0;
     virtual bool next() = 0;
     virtual QVariant value(int i) = 0;
     virtual QVariant value(const QString &name) = 0;
     virtual int size() = 0;
+
+    virtual DatabaseCompatilbility *compatibility() = 0;
 };
 
 typedef QSharedPointer<Database> DatabasePtr;

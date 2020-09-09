@@ -92,5 +92,7 @@
         <file>images/winner.png</file>
         <file>images/zoom-in.png</file>
         <file>images/zoom-out.png</file>
+        <file>images/book.png</file>
+        <file>changelog.txt</file>
     </qresource>
 </RCC>

@@ -3,11 +3,14 @@
 #include <QSqlQuery>
 #include <QDebug>
 
+#include "cdatabasecompatibility.h"
+
 CDatabase::CDatabase(const QSqlDatabase &db)
 {
     mData.reset(new CDatabaseData);
     mData->database = db;
     mData->query = QSqlQuery(db);
+    mData->compatibility.reset(new CDatabaseCompatibility(this));
 }
 
 CDatabase::~CDatabase()
@@ -74,7 +77,7 @@ QString CDatabase::lastExecuted() {
     return str;
 }
 
-int CDatabase::numRowsffected()
+int CDatabase::numRowsAffected()
 {
     return mData->query.numRowsAffected();
 }
@@ -97,4 +100,9 @@ QVariant CDatabase::value(const QString &name)
 int CDatabase::size()
 {
     return mData->query.size();
+}
+
+DatabaseCompatilbility *CDatabase::compatibility()
+{
+    return mData->compatibility.data();
 }

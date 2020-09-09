@@ -36,6 +36,7 @@ public:
     QString namaGolongan(int value);
     QString namaJenisSeksi(int value);
     QString namaSektor(int value);
+    QString namaSektor(const QString &value);
     QString namaKdmapGroup(int value);
 
     int bulanTerlambat(const QDate &value, const QDate &jt, int masa, int tahun, int jenis);
