@@ -16,8 +16,6 @@ PegawaiSelectDialog::PegawaiSelectDialog(QWidget *parent) :
     QDialog(parent, Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::MSWindowsFixedSizeDialogHint),
     mJabatan(JabatanUnknown)
 {
-    Engine *engine = Engine::instance();
-
     mPegawaiView = new QTableView;
     mPegawaiView->setAlternatingRowColors(true);
     mPegawaiView->setShowGrid(false);
@@ -30,9 +28,7 @@ PegawaiSelectDialog::PegawaiSelectDialog(QWidget *parent) :
     mPegawaiView->verticalHeader()->setDefaultSectionSize(fontMetrics().height()+8);
 
     mKantorComboBox = new QComboBox;
-    QString kodeKantor = engine->databaseSettings()->value(IDS_SERVER_KANTOR_KODE).toString();
-    foreach (const Kantor &kantor, engine->data()->kppList(kodeKantor))
-        mKantorComboBox->addItem(kantor.kode + " - " + kantor.nama, kantor.kode);
+    setOnlyShowCurrentKantor(false);
 
     QHBoxLayout *filterLayout = new QHBoxLayout;
     filterLayout->addWidget(new QLabel("Kantor"));
@@ -74,20 +70,24 @@ void PegawaiSelectDialog::setOnlyShowCurrentKantor(bool value)
 {
     Engine *engine = Engine::instance();
     QString kodeKantor = engine->databaseSettings()->value(IDS_SERVER_KANTOR_KODE).toString();
+    Kantor kantor = engine->data()->kantor(kodeKantor);
 
     mKantorComboBox->clear();
-    foreach (const Kantor &kantor, engine->data()->kppList(kodeKantor))
-        if (value && (kantor.kode == kodeKantor))
-            mKantorComboBox->addItem(kantor.nama, kantor.kode);
+    if (value)
+        mKantorComboBox->addItem(kantor.nama, kantor.kode);
+    else {
+        mKantorComboBox->addItem(kantor.nama, kantor.kode);
+        foreach (const Kantor &kpp, engine->data()->kppList(kodeKantor))
+            mKantorComboBox->addItem(kpp.nama, kpp.kode);
+    }
 }
 
 void PegawaiSelectDialog::setOnlyShowKantor(const QString &kodeKpp)
 {
     Engine *engine = Engine::instance();
     mKantorComboBox->clear();
-    foreach (const Kantor &kantor, engine->data()->kppList(kodeKpp))
-        if (kantor.kode == kodeKpp)
-            mKantorComboBox->addItem(kantor.nama, kantor.kode);
+    Kantor kantor = engine->data()->kantor(kodeKpp);
+    mKantorComboBox->addItem(kantor.nama, kantor.kode);
 }
 
 void PegawaiSelectDialog::setFilterByJabatan(int jabatan)

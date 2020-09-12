@@ -63,7 +63,7 @@ SeksiManageDialog::SeksiManageDialog(QWidget *parent) :
 
     setLayout(layout);
     setWindowTitle("Manage Seksi");
-    setWindowIcon(QIcon(":/images/user.png"));
+    setWindowIcon(QIcon(":/images/pegawai.png"));
     resize(QSize(580, 450));
 
     connect(mKantorComboBox, SIGNAL(currentIndexChanged(int)), SLOT(updateModel()));

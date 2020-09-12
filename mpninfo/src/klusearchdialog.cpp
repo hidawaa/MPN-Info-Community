@@ -14,7 +14,6 @@ KluSearchDialog::KluSearchDialog(QWidget *parent) :
     QDialog(parent)
 {
     mResultView = new QTreeView;
-
     mKeywordEdit = new QLineEdit;
 
     QGridLayout *layout = new QGridLayout;
@@ -24,7 +23,7 @@ KluSearchDialog::KluSearchDialog(QWidget *parent) :
 
     setLayout(layout);
     setWindowTitle("Referensi - KLU");
-    resize(500, 500);
+    resize(800, 500);
 
     connect(mKeywordEdit, SIGNAL(textChanged(QString)), SLOT(search()));
     search();
@@ -32,9 +31,6 @@ KluSearchDialog::KluSearchDialog(QWidget *parent) :
 
 void KluSearchDialog::search()
 {
-    Engine *engine = Engine::instance();
-    QString keyword = mKeywordEdit->text();
-
     delete mResultView->model();
 
     QStandardItemModel *model = new QStandardItemModel(0, 3, mResultView);
@@ -42,9 +38,12 @@ void KluSearchDialog::search()
     model->setHeaderData(1, Qt::Horizontal, "Uraian");
     model->setHeaderData(2, Qt::Horizontal, "Sektor");
 
+    Engine *engine = Engine::instance();
+    DatabasePtr db = engine->database();
+
+    QString keyword = mKeywordEdit->text();
     QString searchSql = QString("SELECT * FROM `klu` WHERE `kode` LIKE '%1%' OR `nama` LIKE '%%1%'").arg(keyword);
 
-    DatabasePtr db = engine->database();
     db->exec(searchSql);
     while (db->next()) {
         QString kode = db->value(0).toString();
@@ -64,7 +63,7 @@ void KluSearchDialog::search()
     }
 
     mResultView->setModel(model);
-    mResultView->setColumnWidth(0, 50);
+    mResultView->setColumnWidth(0, 100);
     mResultView->setColumnWidth(1, 400);
     mResultView->setColumnWidth(2, 200);
 }

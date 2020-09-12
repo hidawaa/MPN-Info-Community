@@ -23,7 +23,7 @@ MapSearchDialog::MapSearchDialog(QWidget *parent) :
 
     setLayout(layout);
     setWindowTitle("Referensi - MAP");
-    resize(500, 500);
+    resize(800, 500);
 
     connect(mKeywordEdit, SIGNAL(textChanged(QString)), SLOT(search()));
     search();
@@ -31,8 +31,6 @@ MapSearchDialog::MapSearchDialog(QWidget *parent) :
 
 void MapSearchDialog::search()
 {
-    QString keyword = mKeywordEdit->text();
-
     delete mResultView->model();
 
     QStandardItemModel *model = new QStandardItemModel(0, 4, mResultView);
@@ -41,13 +39,13 @@ void MapSearchDialog::search()
     model->setHeaderData(2, Qt::Horizontal, "Uraian");
     model->setHeaderData(3, Qt::Horizontal, "Sektor");
 
-
     Engine *engine = Engine::instance();
     DatabasePtr db = engine->database();
 
+    QString keyword = mKeywordEdit->text();
     QString searchSql = QString("SELECT * FROM `map` WHERE (`kdmap` LIKE '%1%' OR `uraian` LIKE '%%1%') AND `kdbayar`!='000' ORDER BY `kdmap`, `kdbayar`").arg(keyword);
-    db->exec(searchSql);
 
+    db->exec(searchSql);
     while (db->next()) {
         QString kdmap = db->value(0).toString();
         QString kdbayar = db->value(1).toString();
@@ -70,8 +68,8 @@ void MapSearchDialog::search()
     }
 
     mResultView->setModel(model);
-    mResultView->setColumnWidth(0, 50);
-    mResultView->setColumnWidth(1, 30);
+    mResultView->setColumnWidth(0, 100);
+    mResultView->setColumnWidth(1, 60);
     mResultView->setColumnWidth(2, 350);
     mResultView->setColumnWidth(3, 150);
 }

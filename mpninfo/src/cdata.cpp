@@ -1,6 +1,8 @@
 #include "cdata.h"
 
 #include <QObject>
+#include <QDebug>
+
 #include <runnable.h>
 
 #include "engine.h"
@@ -8,9 +10,6 @@
 void CRunnable::run() {
     Engine *engine = Engine::instance();
     DatabasePtr db = engine->database();
-
-    (*data).pegawaiHash.clear();
-    (*data).wajibPajakHash.clear();
 
     if (nameList.isEmpty() || nameList.contains("kantor")) {
         (*data).kantorMap.clear();
@@ -34,7 +33,6 @@ void CRunnable::run() {
         }
     }
 
-
     if (nameList.isEmpty() || nameList.contains("seksi")) {
         (*data).seksiMap.clear();
         db->exec("SELECT * FROM `seksi`");
@@ -57,6 +55,7 @@ void CRunnable::run() {
     }
 
     if (nameList.isEmpty() || nameList.contains("pegawai")) {
+        (*data).pegawaiHash.clear();
         db->exec("SELECT * FROM `pegawai`");
         while (db->next()) {
             QString nip = db->value(1).toString();
@@ -82,7 +81,7 @@ void CRunnable::run() {
             Pegawai &p = (*data).pegawaiHash[kantor + ":" + QString::number(tahun) + ":" + nip];
             p.nip = nip;
             p.nip2 = nip2;
-            p.kantor = seksi.kantor;
+            p.kantor = (*data).kantorMap[kantor];
             p.nama = nama;
             p.pangkat = pangkat;
             p.seksi = seksi;
@@ -93,6 +92,7 @@ void CRunnable::run() {
     }
 
     if (nameList.isEmpty() || nameList.contains("wp")) {
+        (*data).wajibPajakHash.clear();
         db->exec("SELECT * FROM `wp`");
         while (db->next()) {
             QString admin = db->value(0).toString();
@@ -163,7 +163,6 @@ KantorList CData::kanwilList()
     QMapIterator<QString, Kantor> iterator(mData.kantorMap);
     while (iterator.hasNext()) {
         iterator.next();
-
         if (iterator.value().type == Kanwil)
             list << iterator.value();
     }
@@ -177,7 +176,6 @@ KantorList CData::kppList()
     QMapIterator<QString, Kantor> iterator(mData.kantorMap);
     while (iterator.hasNext()) {
         iterator.next();
-
         if (iterator.value().type == Kpp)
             list << iterator.value();
     }
@@ -188,13 +186,15 @@ KantorList CData::kppList()
 KantorList CData::kppList(const QString &kanwil)
 {
     KantorList list;
-    foreach (const Kantor &kantor, kppList()) {
-        if (kantor.kanwil == kanwil)
-            list << kantor;
-    }
+    QMapIterator<QString, Kantor> iterator(mData.kantorMap);
+    while (iterator.hasNext()) {
+        iterator.next();
+        if (iterator.value().type != Kpp)
+            continue;
 
-    if (list.isEmpty())
-        list << mData.kantorMap[kanwil];
+        if (iterator.value().kanwil == kanwil)
+            list << iterator.value();
+    }
 
     return list;
 };
@@ -232,6 +232,7 @@ Pegawai CData::pegawai(const QString &kodeKantor, int tahun, const QString &nip)
 
 PegawaiList CData::pegawaiList(const QString &kodeKantor, int tahun)
 {
+
     PegawaiList list;
     QHashIterator<QString, Pegawai> iterator(mData.pegawaiHash);
     while (iterator.hasNext()) {

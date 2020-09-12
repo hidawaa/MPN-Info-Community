@@ -39,8 +39,12 @@ PegawaiManageDialog::PegawaiManageDialog(QWidget *parent) :
 
     mKantorComboBox = new QComboBox;
     QString kodeKantor = engine->databaseSettings()->value(IDS_SERVER_KANTOR_KODE).toString();
-    foreach (const Kantor &kantor, engine->data()->kppList(kodeKantor))
-        mKantorComboBox->addItem(kantor.nama, kantor.kode);
+
+    Kantor kantor = engine->data()->kantor(kodeKantor);
+    mKantorComboBox->addItem(kantor.nama, kantor.kode);
+
+    foreach (const Kantor &kpp, engine->data()->kppList(kodeKantor))
+        mKantorComboBox->addItem(kpp.nama, kpp.kode);
 
     int currentYear = QDate::currentDate().year();
 

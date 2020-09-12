@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     mTabWidget = new QTabWidget;
     mTabWidget->setTabsClosable(true);
 
+    setWindowIcon(QIcon(":/images/logo.png"));
     setCentralWidget(mTabWidget);
     menuBar()->show();
     resize(800, 600);
