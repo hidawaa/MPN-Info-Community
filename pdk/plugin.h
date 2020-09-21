@@ -5,6 +5,7 @@
 #include <QtPlugin>
 
 #include "interface.h"
+#include "exampleaddon.h"
 
 class Plugin : public QObject, Interface
 {
@@ -13,19 +14,12 @@ class Plugin : public QObject, Interface
     Q_INTERFACES(Interface)
 
 public:
-    int type();
-    void init(CoreEngine *);
-    QString author();
-    QString authorEmail();
-    QString group();
-    QString name();
-    QString version();
-    QString title();
-    QString description();
-    Object *object();
-
-private:
-    CoreEngine *mEngine;
+    QString author() { return "Nama Author"; }
+    QString authorEmail() { return "Email Author"; }
+    QString group() { return "Nama Group"; }
+    QString version() { return "Versi"; }
+    QString description() { return "Deskripsi dari Addons"; }
+    QList<AddOnPtr> addOns() { return QList<AddOnPtr>()); }
 };
 
 
