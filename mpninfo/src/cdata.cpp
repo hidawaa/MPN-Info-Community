@@ -281,7 +281,6 @@ const WajibPajakHash &CData::wajibPajakHash()
     return mData.wajibPajakHash;
 }
 
-
 void CData::load(const QStringList &nameList)
 {
     Engine *engine = Engine::instance();
