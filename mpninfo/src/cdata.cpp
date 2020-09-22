@@ -285,8 +285,9 @@ void CData::load(const QStringList &nameList)
 {
     Engine *engine = Engine::instance();
 
-    ObjectPtr loadingDialog = engine->addOn("dialog_loading")->newObject();
-    if (!loadingDialog.isNull()) {
+    AddOnPtr addOnPtr = engine->addOn("dialog_loading");
+    if (!addOnPtr.isNull()) {
+        ObjectPtr loadingDialog = addOnPtr->newObject();
         loadingDialog->exec("setMessage", "Loading Data");
         loadingDialog->exec("show");
     }
