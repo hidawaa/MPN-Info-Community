@@ -287,8 +287,10 @@ void CData::load(const QStringList &nameList)
     Engine *engine = Engine::instance();
 
     ObjectPtr loadingDialog = engine->addOn("dialog_loading")->newObject();
-    loadingDialog->exec("setMessage", "Loading Data");
-    loadingDialog->exec("show");
+    if (!loadingDialog.isNull()) {
+        loadingDialog->exec("setMessage", "Loading Data");
+        loadingDialog->exec("show");
+    }
 
     CRunnable *runnable = new CRunnable(&mData, nameList);
     engine->runSync(runnable);
