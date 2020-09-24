@@ -134,6 +134,33 @@ const QStringList _namaKdmapGroupList = QStringList() << "PPh Migas"
 
 const quint64 cryptoNumber(0x032ab4a5acb3a033);
 
+QString CCommon::osName()
+{
+#if defined(Q_OS_ANDROID)
+    return QLatin1String("Android");
+#elif defined(Q_OS_BLACKBERRY)
+    return QLatin1String("Blackberry");
+#elif defined(Q_OS_IOS)
+    return QLatin1String("IOS");
+#elif defined(Q_OS_MACOS)
+    return QLatin1String("Mac");
+#elif defined(Q_OS_TVOS)
+    return QLatin1String("TvOS");
+#elif defined(Q_OS_WATCHOS)
+    return QLatin1String("WatchOS");
+#elif defined(Q_OS_WINCE)
+    return QLatin1String("WinCE");
+#elif defined(Q_OS_WIN)
+    return QLatin1String("Windows");
+#elif defined(Q_OS_LINUX)
+    return QLatin1String("Linux");
+#elif defined(Q_OS_UNIX)
+    return QLatin1String("Unix");
+#else
+    return QLatin1String("Unknown");
+#endif
+}
+
 QDate CCommon::date(const QString &value)
 {
     {

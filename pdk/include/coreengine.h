@@ -12,8 +12,6 @@
 #include "interface.h"
 #include "runnable.h"
 
-typedef QHash<QString, WajibPajak> WajibPajakHash;
-
 class Settings
 {
 public:
@@ -31,6 +29,7 @@ public:
     CoreEngine(QObject *parent = nullptr) : QObject(parent) {}
     virtual ~CoreEngine() {}
 
+    virtual QString version() = 0;
     virtual QString workingDirectory() = 0;
 
     virtual const User &user() = 0;
@@ -49,6 +48,7 @@ public:
     virtual Window *window() = 0;
 
     virtual void runSync(Runnable *runnable) = 0;
+    virtual void runAsync(Runnable *runnable) = 0;
 };
 
 #endif // COREENGINE_H

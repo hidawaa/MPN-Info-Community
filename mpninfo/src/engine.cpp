@@ -20,6 +20,8 @@
 #include "databaseconnectiondialog.h"
 #include "settingsdialog.h"
 
+#define IDD_VERSION "0.20.0"
+
 const char *chiperPassword = "MpnInfoDatabase";
 
 const KantorMap emptyKantorMap;
@@ -348,6 +350,11 @@ DatabasePtr Engine::database()
     return DatabasePtr(new CDatabase(db));
 }
 
+QString Engine::version()
+{
+    return IDD_VERSION;
+}
+
 QString Engine::workingDirectory()
 {
     return qApp->applicationDirPath();
@@ -414,4 +421,10 @@ void Engine::runSync(Runnable *runnable)
         qApp->processEvents();
         QThread::msleep(10);
     }
+}
+
+void Engine::runAsync(Runnable *runnable)
+{
+    runnable->setAutoDelete(true);
+    QThreadPool::globalInstance()->start(runnable);
 }

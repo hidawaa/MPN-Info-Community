@@ -96,6 +96,7 @@ public:
     virtual QString title() = 0;
     virtual AddOnTypes type() = 0;
     virtual int loadFlags() = 0;
+    virtual QString loadAfter() { return QString(); }
     virtual int permission() = 0;
     virtual ObjectPtr newObject() { return nullptr; }
     virtual WidgetPtr *newWidget() { return nullptr; }
@@ -116,6 +117,7 @@ public:
     virtual QString group() = 0;
     virtual QString version() = 0;
     virtual QString description() = 0;
+    virtual QStringList dependencies() { return QStringList(); }
     virtual QList<AddOnPtr> addOns() = 0;
 };
 

@@ -113,6 +113,7 @@ public:
     void setKantor(const QString &kantor);
     void setKantor(const Kantor &kantor);
 
+    QString version();
     QString workingDirectory();
 
     const User &user() { return mUser; }
@@ -133,6 +134,7 @@ public:
     Window *window() { return mWindow; }
 
     void runSync(Runnable *runnable);
+    void runAsync(Runnable *runnable);
 
 private:
     Engine(QObject *parent = nullptr);

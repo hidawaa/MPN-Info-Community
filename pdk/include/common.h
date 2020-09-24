@@ -11,6 +11,8 @@ class Common
 public:
     virtual ~Common() {}
 
+    virtual QString osName() = 0;
+
     virtual QDate date(const QString &value) = 0;
 
     virtual QString encrypt(const QString &value) = 0;

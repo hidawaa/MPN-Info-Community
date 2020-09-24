@@ -8,6 +8,8 @@ class CCommon : public Common
 public:
     ~CCommon() {}
 
+    QString osName();
+
     QDate date(const QString &value);
 
     QString encrypt(const QString &value);
