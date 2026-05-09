@@ -90,6 +90,9 @@
 class Engine : public CoreEngine
 {
     Q_OBJECT
+signals:
+    void loggedOut();
+    void quitted();
 public:
     ~Engine();
 
