@@ -15,7 +15,13 @@ KluSelectDialog::KluSelectDialog(QWidget *parent) :
     QDialog(parent)
 {
     mResultView = new QTreeView;
+    mResultView->setAlternatingRowColors(true);
+    mResultView->setRootIsDecorated(false);
+    mResultView->setSortingEnabled(true);
+    mResultView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     mResultView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    mResultView->header()->setStretchLastSection(false);
+    mResultView->header()->setHighlightSections(false);
 
     mKeywordEdit = new QLineEdit;
 
