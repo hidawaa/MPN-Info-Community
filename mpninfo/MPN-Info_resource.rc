@@ -1,0 +1,38 @@
+#include <windows.h>
+
+VS_VERSION_INFO VERSIONINFO
+	FILEVERSION 0,20,0,0
+	PRODUCTVERSION 0,20,0,0
+	FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+	FILEFLAGS VS_FF_DEBUG
+#else
+	FILEFLAGS 0x0L
+#endif
+	FILEOS VOS_NT_WINDOWS32
+	FILETYPE VFT_DLL
+	FILESUBTYPE VFT2_UNKNOWN
+	BEGIN
+		BLOCK "StringFileInfo"
+		BEGIN
+			BLOCK "042104b0"
+			BEGIN
+				VALUE "CompanyName", "Direktorat Jenderal Pajak\0"
+				VALUE "FileDescription", "MPN Info Community\0"
+				VALUE "FileVersion", "0.20.0.0\0"
+				VALUE "LegalCopyright", "Copyright 2024\0"
+				VALUE "OriginalFilename", "MPN-Info.exe\0"
+				VALUE "ProductName", "MPN-Info\0"
+				VALUE "ProductVersion", "0.20.0.0\0"
+				VALUE "InternalName", "\0"
+				VALUE "Comments", "\0"
+				VALUE "LegalTrademarks", "\0"
+			END
+		END
+		BLOCK "VarFileInfo"
+		BEGIN
+			VALUE "Translation", 0x0421, 1200
+		END
+	END
+/* End of Version info */
+

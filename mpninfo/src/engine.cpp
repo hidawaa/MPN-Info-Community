@@ -31,7 +31,7 @@ const WajibPajakHash emptyWajibPajakHash;
 
 Engine::Engine(QObject *parent) :
     CoreEngine(parent),
-    mSettings("settings.ini", QSettings::IniFormat)
+    mSettings(QCoreApplication::applicationDirPath() + "/settings.ini", QSettings::IniFormat)
 {
 }
 
@@ -181,7 +181,7 @@ bool Engine::connectDatabase()
 
 void Engine::loadAddons()
 {
-    QDir pluginsDir("addons");
+    QDir pluginsDir(QCoreApplication::applicationDirPath() + "/addons");
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
         QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
         QObject *plugin = pluginLoader.instance();
@@ -261,12 +261,13 @@ bool Engine::login(const QString &uname, const QString &pwd)
     int group = query.value(3).toInt();
 
     bool success = false;
-    if (version == "4.4") {
+    if (version == "4.8") {
         if (password == pwd)
             success = true;
     }
     else if (version == "5.0") {
-        QString passHash = QCryptographicHash::hash(QString(uname + ":" + pwd).toUtf8(), QCryptographicHash::Sha1).toHex();
+        // SHA256 lebih aman dari SHA1 untuk hashing password
+        QString passHash = QCryptographicHash::hash(QString(uname + ":" + pwd).toUtf8(), QCryptographicHash::Sha256).toHex();
         if (password == passHash)
             success = true;
     }

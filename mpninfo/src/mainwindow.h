@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QMap>
+#include <QAction>
+#include <QMenu>
 
 #include <window.h>
 #include <interface.h>

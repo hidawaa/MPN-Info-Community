@@ -1,6 +1,6 @@
 #! [0]
 TEMPLATE        = lib
-CONFIG         += plugin
+CONFIG         += plugin c++17
 QT             += widgets sql
 INCLUDEPATH    += $$PWD/include
 HEADERS         = plugin.h

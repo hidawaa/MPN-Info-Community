@@ -9,13 +9,13 @@ void DatabaseSettings::setValue(const QString &key, const QVariant &value)
         return;
 
     QString result;
-    if (value.type() == QVariant::ByteArray) {
+    if (value.typeId() == QMetaType::QByteArray) {
         QByteArray a = value.toByteArray();
         result = QLatin1String("@ByteArray(");
         result += QString::fromLatin1(a.constData(), a.size());
         result += QLatin1Char(')');
     }
-    else if (value.type() == QVariant::Double)
+    else if (value.typeId() == QMetaType::Double)
         result = QString("%1").arg(value.toDouble(), 0, 'f', 2);
     else
         result = value.toString();

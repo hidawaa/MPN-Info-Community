@@ -19,7 +19,7 @@ public:
     QString group() { return "Nama Group"; }
     QString version() { return "Versi"; }
     QString description() { return "Deskripsi dari Addons"; }
-    QList<AddOnPtr> addOns() { return QList<AddOnPtr>()); }
+    QList<AddOnPtr> addOns() { return QList<AddOnPtr>(); }
 };
 
 

@@ -2,9 +2,20 @@ QT       += core gui network sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
-TARGET = MPN-Info
+CONFIG += c++17
+TARGET  = MPN-Info
+VERSION = 0.20.0
+
 DESTDIR = $$OUT_PWD/../build
+
+# Windows executable metadata (Properties > Details)
+win32 {
+    QMAKE_TARGET_COMPANY     = "Direktorat Jenderal Pajak"
+    QMAKE_TARGET_DESCRIPTION = "MPN Info Community"
+    QMAKE_TARGET_COPYRIGHT   = "Copyright 2024"
+    QMAKE_TARGET_PRODUCT     = "MPN-Info"
+    RC_LANG                  = 0x0421  # Indonesian
+}
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -12,10 +23,9 @@ DESTDIR = $$OUT_PWD/../build
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
-# You can also make your code fail to compile if it uses deprecated APIs.
-# In order to do so, uncomment the following line.
-# You can also select to disable deprecated APIs only up to a certain version of Qt.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+# Fail to compile if deprecated Qt APIs (before Qt 6.0) are used.
+# This enforces full Qt6 compatibility.
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 
 INCLUDEPATH +=../pdk/include
 

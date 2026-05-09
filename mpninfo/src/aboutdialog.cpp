@@ -21,7 +21,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
 
         QFont titleFont;
         titleFont.setPointSize(11);
-        titleFont.setWeight(75);
+        titleFont.setWeight(QFont::Bold);
         appNameLabel->setFont(titleFont);
 
         QLabel *buildLabel = new QLabel(QString("Built on %1 at %2\n").arg(__DATE__, __TIME__));

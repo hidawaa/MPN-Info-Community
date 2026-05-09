@@ -54,24 +54,25 @@ void CDatabase::exec()
 
 QString CDatabase::lastExecuted() {
     QString str = mData->query.lastQuery();
-    QMapIterator<QString, QVariant> it(mData->query.boundValues());
-    it.toBack();
-    while (it.hasPrevious())
+    QVariantList boundValues = mData->query.boundValues();
+    for (int i = boundValues.size() - 1; i >= 0; --i)
     {
-        it.previous();
-
-        QString value = it.value().toString();
-        switch (it.value().type())
+        QString key = mData->query.boundValueName(i);
+        QVariant val = boundValues.at(i);
+        QString value = val.toString();
+        switch (val.typeId())
         {
-        case QVariant::String:
-        case QVariant::Date:
+        case QMetaType::QString:
+        case QMetaType::QDate:
             value = QString("'%1'").arg(value);
             break;
         default:
             break;
         }
 
-        str.replace(it.key(), value);
+        if (!key.isEmpty()) {
+            str.replace(key, value);
+        }
     }
 
     return str;
