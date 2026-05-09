@@ -293,12 +293,13 @@ bool Engine::login(const QString &uname, const QString &pwd)
 void Engine::logout()
 {
     mUser = User();
-    qApp->quit();
+    emit loggedOut();
 }
 
 void Engine::quit()
 {
     mRun = false;
+    emit quitted();
     qApp->quit();
 }
 
