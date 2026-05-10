@@ -80,6 +80,5 @@ int main(int argc, char *argv[])
 
     QObject::connect(engine, &Engine::loggedOut, &a, showLoginFlow);
     QTimer::singleShot(0, &a, showLoginFlow);
-
     return a.exec();
 }
