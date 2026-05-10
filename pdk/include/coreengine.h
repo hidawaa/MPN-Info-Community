@@ -36,6 +36,7 @@ public:
     virtual const Kantor &kantor() = 0;
 
     virtual DatabasePtr database() = 0;
+    virtual CoreData *data() = 0;
 
     virtual QSettings *settings() = 0;
     virtual Settings *databaseSettings() = 0;

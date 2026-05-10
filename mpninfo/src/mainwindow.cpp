@@ -95,7 +95,11 @@ void MainWindow::start()
                 mGroupMenuMap[group] = groupMenu;
             }
 
+            QIcon icon(QString(":/images/%1.png").arg(addOnPtr->name()));
             QAction *action = new QAction(title, this);
+            if (!icon.isNull())
+                action->setIcon(icon);
+                
             mActionMap[action] = addOnPtr->name();
             sortMap[title] = action;
         }
@@ -104,9 +108,16 @@ void MainWindow::start()
             addOnExecList << addOnPtr;
     }
 
+    if (mGroupMenuMap.contains("Home")) {
+        menuBar()->addMenu(mGroupMenuMap["Home"]);
+    }
+
     QMapIterator<QString, QMenu *> groupMenuIterator(mGroupMenuMap);
     while (groupMenuIterator.hasNext()) {
         groupMenuIterator.next();
+        
+        if (groupMenuIterator.key() == "Home")
+            continue;
 
         menuBar()->addMenu(groupMenuIterator.value());
     }
@@ -175,6 +186,12 @@ void MainWindow::start()
         mGroupMenuMap[addOn->group()]->addAction(action);
 
         connect(action, &QAction::triggered, this, &MainWindow::onAddOnActionTriggered);
+    }
+
+    foreach (AddOnPtr addOn, addOnExecList) {
+        if (addOn->type() == AddOnPage || addOn->type() == AddOnWidget) {
+            processAddOn(addOn);
+        }
     }
 
     showMaximized();

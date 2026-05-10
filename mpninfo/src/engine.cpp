@@ -208,7 +208,7 @@ void Engine::processAddOnsAtStart()
     foreach (const QString &name, availableAddOns()) {
         AddOnPtr addOnPtr = mAddOnMap[name];
 
-        if (addOnPtr->type() & AddOnProcess && addOnPtr->loadFlags() & AddOnExecAtStart)
+        if (addOnPtr->type() == AddOnProcess && addOnPtr->loadFlags() & AddOnExecAtStart)
             addOnPtr->newProcess()->run();
     }
 }
@@ -218,7 +218,7 @@ void Engine::processAddOnsBeforeLogin()
     foreach (const QString &name, availableAddOns()) {
         AddOnPtr addOnPtr = mAddOnMap[name];
 
-        if (addOnPtr->type() & AddOnProcess && addOnPtr->loadFlags() & AddOnExecBeforeLogin)
+        if (addOnPtr->type() == AddOnProcess && addOnPtr->loadFlags() & AddOnExecBeforeLogin)
             addOnPtr->newProcess()->run();
     }
 }
@@ -231,7 +231,7 @@ void Engine::processAddOnsAfterLogin()
         if (addOnPtr->permission() != 0 && !(addOnPtr->permission() & mUser.permission))
             continue;
 
-        if (addOnPtr->type() & AddOnProcess && addOnPtr->loadFlags() & AddOnExecAfterLogin)
+        if (addOnPtr->type() == AddOnProcess && addOnPtr->loadFlags() & AddOnExecAfterLogin)
             addOnPtr->newProcess()->run();
     }
 }
