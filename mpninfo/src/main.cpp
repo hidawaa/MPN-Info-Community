@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QTimer>
+#include <QFont>
 
 #include "engine.h"
 #include "logindialog.h"
@@ -12,6 +13,9 @@ int main(int argc, char *argv[])
 {
     QLocale::setDefault(QLocale::Indonesian);
     QApplication a(argc, argv);
+
+    QFont legacyFont("MS Shell Dlg 2", 8);
+    QApplication::setFont(legacyFont);
 
     Engine *engine = Engine::instance();
     engine->loadAddons();
@@ -61,19 +65,20 @@ int main(int argc, char *argv[])
         if (loggedIn) {
             engine->settings()->setValue(IDS_GENERAL_LAST_USER, dialog.username());
 
+            mainWindow = new MainWindow;
+            engine->setWindow(mainWindow);
+            mainWindow->showMaximized(); // Show window immediately
+
             if(!engine->load()) {
                 a.exit(1);
                 return;
             }
 
-            mainWindow = new MainWindow;
-            engine->setWindow(mainWindow);
             mainWindow->start();
         }
     };
 
     QObject::connect(engine, &Engine::loggedOut, &a, showLoginFlow);
     QTimer::singleShot(0, &a, showLoginFlow);
-
     return a.exec();
 }

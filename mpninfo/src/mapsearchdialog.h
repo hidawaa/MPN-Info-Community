@@ -4,7 +4,7 @@
 #include <QDialog>
 
 class QLineEdit;
-class QTreeView;
+class QTableView;
 class MapSearchDialog : public QDialog
 {
     Q_OBJECT
@@ -15,7 +15,7 @@ private slots:
     void search();
 
 private:
-    QTreeView *mResultView;
+    QTableView *mResultView;
     QLineEdit *mKeywordEdit;
 };
 
