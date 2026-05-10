@@ -109,14 +109,22 @@ void CRunnable::run() {
             QString bhkm = db->value(11).toString();
             QString status = db->value(12).toString();
             QString klu = db->value(13).toString();
-            QDate tgl_daftar = db->value(14).toDate();
-            QDate tgl_pkp = db->value(15).toDate();
-            QDate tgl_pkp_cabut = db->value(16).toDate();
-            QString nik = db->value(17).toString();
-            QString telp = db->value(18).toString();
-            QString ar = db->value(19).toString();
-            QString eks = db->value(20).toString();
-            QString js = db->value(21).toString();
+            // 14 is sektor
+            QDate tgl_daftar = db->value(15).toDate();
+            QDate tgl_pkp = db->value(16).toDate();
+            QDate tgl_pkp_cabut = db->value(17).toDate();
+            QString nik = db->value(18).toString();
+            QString telp = db->value(19).toString();
+            // 20 is masterfile
+            // 21 is wpbesar
+            // 22 is bayar
+            // 23 is lapor
+            // 24 is eksten
+            // 25 is assign
+            // 26 is nipPj
+            QString ar = db->value(27).toString();
+            QString eks = db->value(28).toString();
+            QString js = db->value(29).toString();
 
             WajibPajak &wp = (*data).wajibPajakHash[npwp + kpp + cabang];
             wp.admin = admin;
@@ -232,16 +240,41 @@ Pegawai CData::pegawai(const QString &kodeKantor, int tahun, const QString &nip)
 
 PegawaiList CData::pegawaiList(const QString &kodeKantor, int tahun)
 {
-
     PegawaiList list;
     QHashIterator<QString, Pegawai> iterator(mData.pegawaiHash);
+    
+    // First try: exact match for the requested year
     while (iterator.hasNext()) {
         iterator.next();
         const Pegawai &pegawai = iterator.value();
         if (pegawai.kantor.kode != kodeKantor || pegawai.tahun != tahun)
             continue;
 
-        list << iterator.value();
+        list << pegawai;
+    }
+
+    // Fallback: if no data for the requested year, use the most recent year available
+    if (list.isEmpty()) {
+        int maxTahun = 0;
+        iterator.toFront();
+        while (iterator.hasNext()) {
+            iterator.next();
+            const Pegawai &pegawai = iterator.value();
+            if (pegawai.kantor.kode == kodeKantor && pegawai.tahun > maxTahun) {
+                maxTahun = pegawai.tahun;
+            }
+        }
+
+        if (maxTahun > 0) {
+            iterator.toFront();
+            while (iterator.hasNext()) {
+                iterator.next();
+                const Pegawai &pegawai = iterator.value();
+                if (pegawai.kantor.kode == kodeKantor && pegawai.tahun == maxTahun) {
+                    list << pegawai;
+                }
+            }
+        }
     }
 
     return list;
@@ -286,8 +319,9 @@ void CData::load(const QStringList &nameList)
     Engine *engine = Engine::instance();
 
     AddOnPtr addOnPtr = engine->addOn("dialog_loading");
+    ObjectPtr loadingDialog;
     if (!addOnPtr.isNull()) {
-        ObjectPtr loadingDialog = addOnPtr->newObject();
+        loadingDialog = addOnPtr->newObject();
         loadingDialog->exec("setMessage", "Loading Data");
         loadingDialog->exec("show");
     }

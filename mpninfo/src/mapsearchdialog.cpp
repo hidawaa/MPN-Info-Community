@@ -4,7 +4,7 @@
 #include <QLineEdit>
 #include <QStandardItemModel>
 #include <QSqlQuery>
-#include <QTreeView>
+#include <QTableView>
 #include <QHeaderView>
 #include <QLabel>
 
@@ -13,14 +13,23 @@
 MapSearchDialog::MapSearchDialog(QWidget *parent) :
     QDialog(parent)
 {
-    mResultView = new QTreeView;
+    mResultView = new QTableView;
     mResultView->setAlternatingRowColors(true);
-    mResultView->setRootIsDecorated(false);
+    mResultView->setWordWrap(false);
     mResultView->setSortingEnabled(true);
     mResultView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    mResultView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     mResultView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    mResultView->header()->setStretchLastSection(false);
-    mResultView->header()->setHighlightSections(false);
+    
+    QFont tableFont = mResultView->font();
+    tableFont.setPointSize(8);
+    mResultView->setFont(tableFont);
+    
+    mResultView->horizontalHeader()->setStretchLastSection(false);
+    mResultView->horizontalHeader()->setHighlightSections(false);
+    mResultView->verticalHeader()->hide();
+    mResultView->verticalHeader()->setDefaultSectionSize(mResultView->fontMetrics().height() + 10);
+    mResultView->verticalHeader()->setHighlightSections(false);
 
     mKeywordEdit = new QLineEdit;
 
