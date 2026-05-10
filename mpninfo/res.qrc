@@ -92,6 +92,7 @@
         <file>images/zoom-in.png</file>
         <file>images/zoom-out.png</file>
         <file>images/book.png</file>
+        <file alias="images/home_page.png">images/dashboard.png</file>
         <file>changelog.txt</file>
     </qresource>
 </RCC>
